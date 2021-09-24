@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html>
+
+<meta charset = "UTF-8">
+<title>HelpForum -{%block title%} {%endblock%}</title>
+
+<h1> Welcome to HelpForum! </h1>
+
+{% if session.username%}
+<a href="/"> Main page</a>
+<a href="/logout">Logout</a>
+
+<a href="/postquestion"> Post a question</a>
+<a href="/myquestions"> My questions</a>
+
+
+<a href="/allusers"> All accounts</a>
+<a href="/allquestions"> All questions</a>
+
+{% else %}
+<a href="/"> Main page</a>
+<a href="/login">Login</a>
+<a href="/register"> Register</a>
+<a href="/allusers"> All accounts</a>
+<a href="/questions"> User questions</a>
+{%endif%}
+
+<br>
+{% block content %}
+{% endblock %}
+
+
+</html>

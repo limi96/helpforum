@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %} 
+
+<h2> Please login</h2>
+
+{% endblock %}
+
+{% block content %}
+
+<form action = "/login" method ="POST">
+<p> Username: <br>
+<input type ="text" name ="username">
+</p>
+<p> Password: <br>
+<input type ="password" name = "password">
+</p>
+<input type="submit" value = "Login">
+</form>
+
+If you do not already have an account, please register from <a href="/register"> here </a>.
+
+{% endblock %}
+
+
+
+
