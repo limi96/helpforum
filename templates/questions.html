@@ -1,0 +1,22 @@
+
+    {%extends "layout.html"%}
+
+    {% block content %}
+
+
+    {% if not questionlist %}
+
+    There are no questions :( !
+
+    {%else%}
+    Click on the question to browse it!
+    <ul>
+    {%for i in questionlist: %}
+    <li> <a href="{{url_for('questionURL',question_id = i[1])}}"> {{i[0]}} </a>
+    {%endfor %}
+    </ul>
+
+    {%endif%}
+
+
+    {% endblock %}
