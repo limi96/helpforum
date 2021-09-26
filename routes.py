@@ -4,6 +4,23 @@ import questions as q
 from flask import redirect, render_template, request, session, url_for
 
 
+@app.route("/<question_id>/<answer_id>/<answer_points>/<option>", methods =["POST"])
+def giveVote(question_id, answer_id, answer_points,option):
+    voteType = request.form.get("vote")
+    q.vote(voteType, answer_id, answer_points)
+    return redirect(url_for('questionURL', question_id = question_id,option=option))
+
+@app.route("/<question_id>/<option>/<answer_id>", methods = ["POST"])
+def deleteAnswer(question_id, option, answer_id):
+    q.delete("answers", answer_id)
+    return redirect(url_for('questionURL', question_id = question_id, option=option))
+
+@app.route("/<question_id>", methods = ["POST"])
+def deleteQuestion(question_id):
+    q.delete("user_questions", question_id)
+    return render_template("index.html", message = "Question successfully deleted!")
+
+
 @app.route("/sortBy/<question_id>", methods = ["POST"])
 def sortBy(question_id):
     option = request.form["option"]
@@ -18,28 +35,17 @@ def questionURL(question_id,option):
 
     return render_template("new.html", question_id = question_id, title = question[0], 
             content = question[1], username = question[2],
-             time = question[3], answers = answers, option=option)
+             time = question[3], user_id = question[4], answers = answers, option=option)
 
 
-@app.route("/GiveAnswer/<question_id>/<option>", methods =["POST"])
-def GiveAnswer(question_id, option):
+
+@app.route("/<question_id>/<option>", methods =["POST"])
+def giveAnswer(question_id, option):
     answer = request.form["answer"]
     if q.postAnswer(answer,question_id):
         return redirect(url_for('questionURL', question_id = question_id, option=option))
     else:
         return render_template("errors.html", message="Failed to post question")
-
-
-@app.route("/UPvote/<question_id>/<answer_id>/<answer_points>/<option>", methods=["POST"]) 
-def UPvote(question_id, answer_id, answer_points,option):
-    #print("Answer points: " + answer_points)
-    q.vote(True, answer_id, answer_points)
-    return redirect(url_for('questionURL', question_id = question_id,option=option))
-
-@app.route("/DOWNvote/<question_id>/<answer_id>/<answer_points>/<option>", methods=["POST"]) 
-def DOWNvote(question_id, answer_id, answer_points,option):
-    q.vote(False, answer_id, answer_points)
-    return redirect(url_for('questionURL', question_id = question_id,option=option))
 
 
 

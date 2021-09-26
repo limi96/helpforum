@@ -2,6 +2,53 @@ from db import db
 import users
 
 
+
+
+def vote(voteType, answer_id, answer_points):
+    user_id = users.user_id()
+    #first check if user is in points
+    sql = "SELECT user_id FROM points P WHERE P.user_id = :user_id AND P.answer_id =:answer_id"
+    result = db.session.execute(sql, {"user_id":user_id, "answer_id":answer_id})
+    check = False
+    for i in result: 
+        print(i)
+        if (i[0] == user_id): 
+            check = True
+            break
+    if check: return False
+
+    #if not in points, count vote
+    insert_points = int(answer_points)+1 if (voteType == "Upvote!") else int(answer_points)-1
+
+    sql = "INSERT INTO points (result, answer_id, user_id) VALUES (:result, :answer_id, :user_id)" 
+    db.session.execute(sql, {"result":insert_points, "answer_id":answer_id, "user_id":user_id })
+    db.session.commit()
+
+    sql = "UPDATE answers SET answer_points=:insert_points WHERE id =:answer_id"
+    db.session.execute(sql, {"insert_points":insert_points, "answer_id":answer_id})
+    db.session.commit()        
+    return True
+    
+
+
+
+
+
+
+
+
+def delete(type, id):
+    sql = "DELETE FROM "
+
+    if type =="answers":         sql += type
+    if type =="user_questions":  sql += type       #Need to set ON DELETE CASCADE ON SCHEMA.SQL
+
+    sql += " WHERE id =:id"
+
+    db.session.execute(sql, {"id":id})
+    db.session.commit()
+
+
 def postAnswer(answer, question_id):
     user_id = users.user_id()
     points = 0
@@ -27,34 +74,7 @@ def fetchAllAnswers(question_id, option):
     result = db.session.execute(sql, {"id":question_id})
     return result.fetchall()
     
-def vote(UPvote, answer_id, answer_points):
-    user_id = users.user_id()
-    #first check if user is in points
-    sql = "SELECT user_id FROM points P WHERE P.user_id = :user_id AND P.answer_id =:answer_id"
-    result = db.session.execute(sql, {"user_id":user_id, "answer_id":answer_id})
-    check = False
-    for i in result: 
-        print(i)
-        if (i[0] == user_id): 
-            check = True
-            break
-    if check: return False
 
-    #if not in points, count vote
-    insert_points = int(answer_points)+1 if (UPvote) else int(answer_points)-1
-
-    sql = "INSERT INTO points (result, answer_id, user_id) VALUES (:result, :answer_id, :user_id)" 
-    db.session.execute(sql, {"result":insert_points, "answer_id":answer_id, "user_id":user_id })
-    db.session.commit()
-
-    sql = "UPDATE answers SET answer_points=:insert_points WHERE id =:answer_id"
-    db.session.execute(sql, {"insert_points":insert_points, "answer_id":answer_id})
-    db.session.commit()        
-    return True
-
-
-
-    
 def postQuestion(title, question):
     user_id = users.user_id()
     if user_id == 0:
@@ -77,7 +97,7 @@ def fetchMyQuestions(user_id):
     return result.fetchall()
 
 def fetchQuestion(question_id):
-    sql = "SELECT Q.question_title, Q.question_content, U.username, Q.send_time FROM user_questions Q, users U"\
+    sql = "SELECT Q.question_title, Q.question_content, U.username, Q.send_time, U.id FROM user_questions Q, users U"\
         " WHERE Q.id = :id AND Q.user_id = U.id"
     id = question_id
     result = db.session.execute(sql, {"id":id})

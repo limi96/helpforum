@@ -12,6 +12,11 @@ Description of question: {{ content }}
 <br> 
 <br> 
 Posted by: <b>{{username}} </b> at {{time.strftime("%Y-%m-%d %H:%M:%S")}} 
+
+<form action="{{url_for('deleteQuestion', question_id = question_id, option=option)}}" method ="post"> 
+    <input type="submit" name="Delete" value="Delete"> 
+</form>
+
 <br>
 <br> 
 <br>
@@ -36,22 +41,31 @@ Be the first one :)!
     <br>
     <br>
     Posted by: <b>{{i[0]}} </b> at {{i[3].strftime("%Y-%m-%d %H:%M:%S")}}
-    <form action="{{url_for('UPvote', question_id = question_id, answer_id=i[4], answer_points=i[5],option=option)}}" method="post">
-    <input type="submit" value="Upvote!">
+    <form action="{{url_for('giveVote', question_id = question_id, answer_id=i[4], answer_points=i[5],option=option)}}" method="post">
+    <input type="submit" name="vote" value="Upvote!">
     </form>
-    <form action="{{url_for('DOWNvote', question_id = question_id, answer_id=i[4], answer_points=i[5],option=option)}}" method="post">
-        <input type="submit" value="Downvote!">
+    <form action="{{url_for('giveVote', question_id = question_id, answer_id=i[4], answer_points=i[5],option=option)}}" method="post">
+        <input type="submit" name ="vote" value="Downvote!">
         </form>
-    Answer points: {{i[5]}} 
+    Answer points: {{i[5]}}  
+
+
+    {%if session.username == i[0]%}
+    <form action="{{url_for('deleteAnswer', question_id = question_id, option=option, answer_id=i[4])}}" method ="post"> 
+        <input type="submit" name="Delete" value="Delete"> 
+    </form>
         <br> 
-        <hr>
         <br>
+    {%else%}
+    {%endif%}
+
+    <hr>
     {%endfor %}
 
 {%endif%}
 
 <h5> Post a new answer! </h5>
-<form action="{{url_for('GiveAnswer', question_id = question_id, option=option)}}" method="post">
+<form action="{{url_for('giveAnswer', question_id = question_id, option=option)}}" method="post">
     <textarea name="answer" rows="2" cols="60" placeholder = "Write your answer here"></textarea>
     <br>
     <input type="submit" value="Post answer">
