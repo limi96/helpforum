@@ -3,6 +3,24 @@ import users
 import questions as q
 from flask import redirect, render_template, request, session, url_for
 
+
+@app.route("/sortBy/<question_id>", methods = ["POST"])
+def sortBy(question_id):
+    option = request.form["option"]
+    return redirect(url_for('questionURL', question_id = question_id, option=option))
+
+
+@app.route("/<question_id>/<option>")
+def questionURL(question_id,option):
+    
+    question = q.fetchQuestion(question_id)
+    answers = q.fetchAllAnswers(question_id, option)
+
+    return render_template("new.html", question_id = question_id, title = question[0], 
+            content = question[1], username = question[2],
+             time = question[3], answers = answers, option=option)
+
+
 @app.route("/UPvote/<question_id>/<answer_id>/<answer_points>", methods=["POST"]) 
 def UPvote(question_id, answer_id, answer_points):
     #print("Answer points: " + answer_points)
@@ -26,15 +44,7 @@ def GiveAnswer(question_id):
 
 
 
-@app.route("/<question_id>")
-def questionURL(question_id):
-    question=[]
-    answers=[]
-    question = q.fetchQuestion(question_id)
-    answers = q.fetchAllAnswers(question_id)
-    return render_template("new.html", question_id = question_id, title = question[0], 
-            content = question[1], username = question[2],
-             time = question[3], answers = answers)
+
 
 
 @app.route("/allquestions")
@@ -61,8 +71,6 @@ def postquestion():
             return render_template("index.html", message ="Successfully posted!")
         else:
             return render_template("errors.html", message="Failed to post question")
-
-
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():

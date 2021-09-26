@@ -2,9 +2,36 @@ from db import db
 import users
 
 
+def postAnswer(answer, question_id):
+    user_id = users.user_id()
+    points = 0
+    if user_id == 0:
+        return False
+    sql = "INSERT INTO answers (answer_content, answer_points, question_id, user_id, send_time)"\
+        " VALUES (:answer_content, :answer_points, :question_id, :user_id, NOW())"
+    db.session.execute(sql, {"answer_content":answer,"answer_points":points,"question_id":question_id, "user_id":user_id })
+    db.session.commit()
+
+    return True
+
+def fetchAllAnswers(question_id, option):
+    
+    sql = "SELECT U.username, A.question_id, A.answer_content, A.send_time, A.id, A.answer_points FROM answers A, users U "\
+        "WHERE A.question_id = :id AND U.id = A.user_id"
+        
+    if option=="1": sql += " ORDER BY A.send_time DESC"
+    if option=="2": sql += " ORDER BY A.send_time ASC"
+    if option=="3": sql += " ORDER BY A.answer_points DESC"
+    if option=="4": sql += " ORDER BY A.answer_points ASC"
+
+    result = db.session.execute(sql, {"id":question_id})
+    return result.fetchall()
+
+
+
+
 def vote(UPvote, answer_id, answer_points):
     user_id = users.user_id()
-
     #first check if user is in points
     sql = "SELECT user_id FROM points P WHERE P.user_id = :user_id AND P.answer_id =:answer_id"
     result = db.session.execute(sql, {"user_id":user_id, "answer_id":answer_id})
@@ -28,37 +55,8 @@ def vote(UPvote, answer_id, answer_points):
     db.session.commit()        
     return True
 
-def fetchVotes():
 
-    return 0
 
-def postAnswer(answer, question_id):
-    user_id = users.user_id()
-    points = 0
-    if user_id == 0:
-        return False
-    sql = "INSERT INTO answers (answer_content, answer_points, question_id, user_id, send_time)"\
-        " VALUES (:answer_content, :answer_points, :question_id, :user_id, NOW())"
-    db.session.execute(sql, {"answer_content":answer,"answer_points":points,"question_id":question_id, "user_id":user_id })
-    db.session.commit()
-
-    return True
-
-def fetchAllAnswers(question_id):
-    #sql = "SELECT Q.id, A.answer_content, U.username, A.send_time FROM answers A, users U, user_questions Q"\
-    #    " WHERE A.question_id = Q.id AND A.user_id = U.id"
-    
-    #sql = "SELECT A.question_id, A.answer_content, A.send_time FROM answers A INNER JOIN user_questions Q"\
-    #    " ON A.question_id = Q.id"
-    
-    sql = "SELECT U.username, A.question_id, A.answer_content, A.send_time, A.id, A.answer_points FROM answers A, users U "\
-        "WHERE A.question_id = :id AND U.id = A.user_id ORDER BY A.send_time"
-
-    #ORDER BY A.answer_points
-    #SELECT A.answer_points
-
-    result = db.session.execute(sql, {"id":question_id})
-    return result.fetchall()
     
 def postQuestion(title, question):
     user_id = users.user_id()
