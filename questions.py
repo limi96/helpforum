@@ -26,10 +26,7 @@ def fetchAllAnswers(question_id, option):
 
     result = db.session.execute(sql, {"id":question_id})
     return result.fetchall()
-
-
-
-
+    
 def vote(UPvote, answer_id, answer_points):
     user_id = users.user_id()
     #first check if user is in points

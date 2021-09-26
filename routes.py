@@ -12,7 +12,7 @@ def sortBy(question_id):
 
 @app.route("/<question_id>/<option>")
 def questionURL(question_id,option):
-    
+
     question = q.fetchQuestion(question_id)
     answers = q.fetchAllAnswers(question_id, option)
 
@@ -40,12 +40,6 @@ def GiveAnswer(question_id):
         return redirect(url_for('questionURL', question_id = question_id))
     else:
         return render_template("errors.html", message="Failed to post question")
-
-
-
-
-
-
 
 @app.route("/allquestions")
 def allquestions():
