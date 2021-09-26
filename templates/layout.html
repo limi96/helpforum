@@ -3,11 +3,15 @@
 <html>
 
 <meta charset = "UTF-8">
-<title>HelpForum -{%block title%} {%endblock%}</title>
+<title>HelpForum {%block title%} {%endblock%}</title>
 
-<h1> Welcome to HelpForum! </h1>
+
+
 
 {% if session.username%}
+
+<h1> Welcome to HelpForum, {{session.username}} ! </h1>
+
 <a href="/"> Main page</a>
 <a href="/logout">Logout</a>
 
@@ -19,16 +23,19 @@
 <a href="/allquestions"> All questions</a>
 
 {% else %}
+<h1> Welcome to HelpForum! </h1>
 <a href="/"> Main page</a>
 <a href="/login">Login</a>
 <a href="/register"> Register</a>
 <a href="/allusers"> All accounts</a>
-<a href="/questions"> User questions</a>
+<a href="/allquestions"> User questions</a>
 {%endif%}
 
 <br>
+<br>
 {% block content %}
 {% endblock %}
+
 
 
 </html>

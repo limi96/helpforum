@@ -3,9 +3,20 @@
 
 
 {% block content %}
+
+
+{% if not userlist %}
+There are no users :( !
+
+{%else%}
 <ul>
 {%for i in userlist: %}
   <li>{{i[0]}}
 {%endfor %}
 </ul>
+
+{%endif%}
+
+
+
 {% endblock %}

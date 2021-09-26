@@ -5,8 +5,15 @@
 {% block content %}
 
 <title>Etusivu</title>
-<h1>Etusivu</h1>
-<b>Tervetuloa</b> <i>sovellukseen</i>!
+
+{%if not message %}
+Hello my friend :)
+
+
+
+{%else%}
+{{message}}
+{%endif%}
 
 {% endblock %}
 
