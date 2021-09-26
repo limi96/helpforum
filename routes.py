@@ -21,25 +21,27 @@ def questionURL(question_id,option):
              time = question[3], answers = answers, option=option)
 
 
-@app.route("/UPvote/<question_id>/<answer_id>/<answer_points>", methods=["POST"]) 
-def UPvote(question_id, answer_id, answer_points):
-    #print("Answer points: " + answer_points)
-    q.vote(True, answer_id, answer_points)
-    return redirect(url_for('questionURL', question_id = question_id))
-
-@app.route("/DOWNvote/<question_id>/<answer_id>/<answer_points>", methods=["POST"]) 
-def DOWNvote(question_id, answer_id, answer_points):
-    q.vote(False, answer_id, answer_points)
-    return redirect(url_for('questionURL', question_id = question_id))
-
-
-@app.route("/GiveAnswer/<question_id>", methods =["POST"])
-def GiveAnswer(question_id):
+@app.route("/GiveAnswer/<question_id>/<option>", methods =["POST"])
+def GiveAnswer(question_id, option):
     answer = request.form["answer"]
     if q.postAnswer(answer,question_id):
-        return redirect(url_for('questionURL', question_id = question_id))
+        return redirect(url_for('questionURL', question_id = question_id, option=option))
     else:
         return render_template("errors.html", message="Failed to post question")
+
+
+@app.route("/UPvote/<question_id>/<answer_id>/<answer_points>/<option>", methods=["POST"]) 
+def UPvote(question_id, answer_id, answer_points,option):
+    #print("Answer points: " + answer_points)
+    q.vote(True, answer_id, answer_points)
+    return redirect(url_for('questionURL', question_id = question_id,option=option))
+
+@app.route("/DOWNvote/<question_id>/<answer_id>/<answer_points>/<option>", methods=["POST"]) 
+def DOWNvote(question_id, answer_id, answer_points,option):
+    q.vote(False, answer_id, answer_points)
+    return redirect(url_for('questionURL', question_id = question_id,option=option))
+
+
 
 @app.route("/allquestions")
 def allquestions():

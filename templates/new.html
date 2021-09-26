@@ -36,10 +36,10 @@ Be the first one :)!
     <br>
     <br>
     Posted by: <b>{{i[0]}} </b> at {{i[3].strftime("%Y-%m-%d %H:%M:%S")}}
-    <form action="{{url_for('UPvote', question_id = question_id, answer_id=i[4], answer_points=i[5])}}" method="post">
+    <form action="{{url_for('UPvote', question_id = question_id, answer_id=i[4], answer_points=i[5],option=option)}}" method="post">
     <input type="submit" value="Upvote!">
     </form>
-    <form action="{{url_for('DOWNvote', question_id = question_id, answer_id=i[4], answer_points=i[5])}}" method="post">
+    <form action="{{url_for('DOWNvote', question_id = question_id, answer_id=i[4], answer_points=i[5],option=option)}}" method="post">
         <input type="submit" value="Downvote!">
         </form>
     Answer points: {{i[5]}} 
@@ -51,7 +51,7 @@ Be the first one :)!
 {%endif%}
 
 <h5> Post a new answer! </h5>
-<form action="{{url_for('GiveAnswer', question_id = question_id)}}" method="post">
+<form action="{{url_for('GiveAnswer', question_id = question_id, option=option)}}" method="post">
     <textarea name="answer" rows="2" cols="60" placeholder = "Write your answer here"></textarea>
     <br>
     <input type="submit" value="Post answer">
