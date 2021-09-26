@@ -10,7 +10,7 @@ Kaikilla käyttäjillä on “omat kysymykset” -näkymä, josta he voivat seur
 
 Kaikki kysymykset postataan yhteiselle seinälle, josta jokainen voi katsoa, minkälaisia kysymyksiä käyttäjillä on ollut. 
 
-Tällä hetkellä sovelluksessa on kaikki perustoiminnot. Sovellukseen ei kuitenkaan ole vielä implementoitu käyttäjänoikeuksien tarkastajaa, lomakesyötteiden tarkastusta, eikä huomioitu CSRF-haavoittuvuutta. Mahdollisia lisätoimintoja olisivat omien kysymysten ja vastauksien poistaminen.
+Tällä hetkellä sovelluksessa on kaikki perustoiminnot. Sovellukseen on nyt toteutettu kysymysten ja vastausten poistotoiminto. Kysymyksen poistaminen poistaa nyt kaikki kysymykseen liittyvät vastaukset myös. Sovellukseen ei kuitenkaan ole vielä implementoitu käyttäjänoikeuksien tarkastajaa, lomakesyötteiden tarkastusta, eikä huomioitu CSRF-haavoittuvuutta. 
 
 Sovelluksen ulkoasua ei ole varsinaisesti suunniteltu yhtään, joten tämä on heti työn alla sen jälkeen, kun kaikki yllämainitut puutteet saadaan hoidettua pois alta.
 

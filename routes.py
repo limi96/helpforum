@@ -20,7 +20,6 @@ def deleteQuestion(question_id):
     q.delete("user_questions", question_id)
     return render_template("index.html", message = "Question successfully deleted!")
 
-
 @app.route("/sortBy/<question_id>", methods = ["POST"])
 def sortBy(question_id):
     option = request.form["option"]
@@ -37,8 +36,6 @@ def questionURL(question_id,option):
             content = question[1], username = question[2],
              time = question[3], user_id = question[4], answers = answers, option=option)
 
-
-
 @app.route("/<question_id>/<option>", methods =["POST"])
 def giveAnswer(question_id, option):
     answer = request.form["answer"]
@@ -46,8 +43,6 @@ def giveAnswer(question_id, option):
         return redirect(url_for('questionURL', question_id = question_id, option=option))
     else:
         return render_template("errors.html", message="Failed to post question")
-
-
 
 @app.route("/allquestions")
 def allquestions():
