@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 def fetchusers():
     sql = "SELECT username FROM users"
-    result = result = db.session.execute(sql)
+    result = db.session.execute(sql)
     userlist = result.fetchall()
     return userlist
 
@@ -26,13 +26,6 @@ def login(username, password):
             
 def user_id():
     return session.get("user_id", 0)
-
-
-
-
-
-
-
 
 def logout():
     del session["user_id"]

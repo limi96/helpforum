@@ -1,0 +1,51 @@
+{%extends "layout.html"%}
+
+{% block content %}
+
+<h2>
+Question: {{ title }}
+</h2>
+
+
+Description of question: {{ content }}
+<br> 
+<br> 
+<br> 
+Posted by: <b>{{username}} </b> at {{time.strftime("%Y-%m-%d %H:%M:%S")}} 
+
+<h2> Answers: </h2>
+
+{% if not answers %}
+
+There are no answers yet :(
+<br>
+Be the first one :)!
+
+{%else%}
+    {%for i in answers: %}
+    {{i[2]}}
+    <br>
+    <br>
+    Posted by: <b>{{i[0]}} </b> at {{i[3].strftime("%Y-%m-%d %H:%M:%S")}}  Answer.id: {{i[4]}}
+    <form action="{{url_for('UPvote', question_id = question_id, answer_id=i[4], answer_points=i[5])}}" method="post">
+    <input type="submit" value="Upvote!">
+    </form>
+    <form action="{{url_for('DOWNvote', question_id = question_id, answer_id=i[4], answer_points=i[5])}}" method="post">
+        <input type="submit" value="Downvote!">
+        </form>
+    Answer points: {{i[5]}} 
+        <br> 
+        <hr>
+        <br>
+    {%endfor %}
+
+{%endif%}
+
+<h5> Post a new answer! </h5>
+<form action="{{url_for('GiveAnswer', question_id = question_id)}}" method="post">
+    <textarea name="answer" rows="2" cols="60" placeholder = "Write your answer here"></textarea>
+    <br>
+    <input type="submit" value="Post answer">
+    </form>
+
+{% endblock %}

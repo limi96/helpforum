@@ -1,23 +1,53 @@
 from app import app
 import users
 import questions as q
+from flask import redirect, render_template, request, session, url_for
 
-from flask import redirect, render_template, request, session
+@app.route("/UPvote/<question_id>/<answer_id>/<answer_points>", methods=["POST"]) 
+def UPvote(question_id, answer_id, answer_points):
+    #print("Answer points: " + answer_points)
+    q.vote(True, answer_id, answer_points)
+    return redirect(url_for('questionURL', question_id = question_id))
+
+@app.route("/DOWNvote/<question_id>/<answer_id>/<answer_points>", methods=["POST"]) 
+def DOWNvote(question_id, answer_id, answer_points):
+    q.vote(False, answer_id, answer_points)
+    return redirect(url_for('questionURL', question_id = question_id))
+
+
+@app.route("/GiveAnswer/<question_id>", methods =["POST"])
+def GiveAnswer(question_id):
+    answer = request.form["answer"]
+    if q.postAnswer(answer,question_id):
+        return redirect(url_for('questionURL', question_id = question_id))
+    else:
+        return render_template("errors.html", message="Failed to post question")
+
+
+
 
 @app.route("/<question_id>")
-def questionURL():
-    return render_template("new.html")
+def questionURL(question_id):
+    question=[]
+    answers=[]
+    question = q.fetchQuestion(question_id)
+    answers = q.fetchAllAnswers(question_id)
+    return render_template("new.html", question_id = question_id, title = question[0], 
+            content = question[1], username = question[2],
+             time = question[3], answers = answers)
+
 
 @app.route("/allquestions")
 def allquestions():
     questionlist = q.fetchAllQuestions()
-    return render_template("allquestions.html", questionlist = questionlist)
+    return render_template("questions.html", questionlist = questionlist)
 
 @app.route("/myquestions")
 def myquestions():
     id = users.user_id()
     questionlist = q.fetchMyQuestions(id)
-    return render_template("myquestions.html", questionlist = questionlist)
+    return render_template("questions.html", questionlist = questionlist)
+
 
 @app.route("/postquestion", methods=["GET","POST"])
 def postquestion():
@@ -27,10 +57,12 @@ def postquestion():
     if request.method == "POST":
         title = request.form["title"]
         question = request.form["question"]
-        if q.post(title, question):
-            return redirect("/")
+        if q.postQuestion(title, question):
+            return render_template("index.html", message ="Successfully posted!")
         else:
             return render_template("errors.html", message="Failed to post question")
+
+
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
@@ -46,8 +78,7 @@ def register():
         if password != passwordrepeat:
             return render_template("errors.html", message="Passwords do not match")
         if users.register(username, password):
-            return redirect("/")
-            #return render_template("registrationsuccess.html", username = username)
+            return render_template("index.html",message = "Thank you! Please login to proceed")
         else:
             return render_template("errors.html", message = "Registration failed")
 
@@ -55,20 +86,12 @@ def register():
 @app.route("/allusers")
 def allusers():
     userlist = users.fetchusers()
-    print(userlist)
     return render_template("allusers.html", userlist = userlist)
 
 
 @app.route("/")
 def index():    
     return render_template("index.html")
-
-
-
-
-
-
-
 
 
 @app.route("/login", methods = ["GET","POST"])
@@ -84,7 +107,6 @@ def login():
             session["username"] = username
             return redirect("/")
         else:
-            print("I'm here")
             return render_template("errors.html", message = "Wrong username or password")
 
 
@@ -93,23 +115,4 @@ def logout():
     del session["username"]
     return redirect("/")
 
-
-
-            
-
-@app.route("/page1")
-def page1():
-    return "Tämä on sivu 1"
-
-@app.route("/form")
-def form():
-    return render_template("form.html")
-
-@app.route("/result", methods=["POST"])
-def result():
-    return render_template("result.html",name=request.form["name"])
-
-@app.route("/page/<int:abc>")
-def page(abc):
-    return "Tämä on sivu " + str(abc)
 
