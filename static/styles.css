@@ -1,0 +1,138 @@
+body {
+    margin: auto;
+    width: 60em;
+    font-family: 'Helvetica';
+    border: solid #6435ff 1px;
+    border-radius: .5em;
+    padding-top:50px;
+}
+
+.user-info {
+    font-size: 10px;
+}
+
+.message {
+    margin-left: 5em;
+    margin-right:5em;
+}
+
+.content {
+    border: solid #6435ff 1px;
+    padding-left: 0.5em;
+    padding-right:0.5em;
+    border-radius: .5em;
+}
+
+.container{
+    box-sizing: content-box;
+    border: solid #6435ff 1px;
+    padding-top: 20px;
+    padding-left: 11em;
+    padding-right: 8em;
+    border-radius: .5em;
+}
+
+.post-head {
+    border: solid #6435ff 1px;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: .5em;
+}
+
+.sort-options-container{
+    padding: 20px; 
+    padding-left:9em;
+
+}
+
+.post-container {
+    box-sizing: content-box;
+}
+
+.post-body {
+    display: flex;  
+}
+
+.post-author {
+    border: solid #6435ff 1px;
+    flex: 15%;
+    font: 20px;
+    padding:10px;
+    border-radius: .5em;
+}
+
+.post-content {
+    border: solid #6435ff 1px;
+    flex: 85%;
+    padding-left: 10px;
+    padding:10px;
+    border-radius: .5em;
+}
+
+.points-container {
+    padding-left: 5em;
+    display: flex;
+    align-items: center;
+}
+
+.points-element {
+    margin-left: 1.5em;
+    margin-right:1.5em;
+}
+
+
+.title {
+    margin: auto;
+    width: 60%; 
+    margin-bottom: 0.5em;
+    display: block;
+    border: solid #6435ff 0px;
+    text-align: center;
+}
+
+.nav-panel {
+    padding-top:  0.5em;
+    padding-left: 11em;
+    padding-right: 0.5em;
+    margin-bottom: 3em;
+}
+/*  NOT USED
+.nav-item {
+    padding-top:    3px; 
+    padding-bottom: 3px;
+    width: 100px; 
+    border: solid #6435ff 0px;
+}
+*/
+
+.nav-link {
+    display:block;
+    text-align: center;
+    box-sizing: border-box; 
+    width:  110px;
+    background: #6435ff;
+    color:      #ffffff;
+    padding:   8px;
+    font-size: 13px;
+    float: left;
+    border-radius: 2em;
+}
+
+a:hover {
+    background-color:#ffffff;
+    color:#6435ff;
+    border-color: #6435ff;
+    border: solid #6435ff 1px;
+}
+
+.question-link {
+    border: solid #6435ff 1px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: .5em;
+    display:block;
+}
