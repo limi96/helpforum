@@ -13,6 +13,10 @@
                 <p class="user-info"> Posted by: <b>{{username}} </b> <br> {{time.strftime("%Y-%m-%d %H:%M:%S")}}    </p>
                  
                 {%if session.username == username%}
+                    <form action="{{url_for('edit_question',question_id = question_id)}}" method ="post"> 
+                        <input type="submit" name="edit_question" value="Edit"> 
+                    </form>
+
                     <form action="{{url_for('delete_question', question_id = question_id, sort_option=sort_option)}}" method ="post"> 
                         <input type="submit" name="Delete" value="Delete"> 
                     </form>
@@ -29,10 +33,21 @@
         <br>
         <b> Post a new answer! </b>
         <form action="{{url_for('post_answer', question_id = question_id, sort_option=sort_option)}}" method="post">
-            <textarea name="answer" rows="2" cols="88" placeholder = "Write your answer here"></textarea>
+            <textarea name="answer" id="answer" rows="2" cols="88" placeholder = "Write your answer here"></textarea>
             <br>
             <input type="submit" value="Post answer">
         </form>
+
+        <p><span id="answerWordCount"> 0/100 words</span></p> 
+
+        <script
+            src ="/static/wordCount.js"
+            questionArea = "answer"
+            questionDisplay ="answerWordCount"
+            questionMin = "5"
+            questionMax = "100">
+        </script>
+
     {%else%}
         Login to answer!
     {%endif%}
@@ -46,19 +61,23 @@
 
     {%else%}
 
-    <div class="sort-options-container">
-        <form action="{{url_for('sort_by', question_id = question_id)}}"  method="POST">    
-            <input type="radio" name="sort_option" value="1" {%if sort_option=="1"%} checked {%endif%} onchange =this.form.submit() > Newest           
-            <input type="radio" name="sort_option" value="2" {%if sort_option=="2"%} checked {%endif%} onchange =this.form.submit() > Oldest         
-            <input type="radio" name="sort_option" value="3" {%if sort_option=="3"%} checked {%endif%} onchange =this.form.submit() > Most points
-            <input type="radio" name="sort_option" value="4" {%if sort_option=="4"%} checked {%endif%} onchange =this.form.submit() > Least points   
-        </form>
+    <div class="post-body">
+        <div class="message">
+            <h4>#Answers: {{answers|length}} </h4>
+        </div>
+        <div class="sort-options-container">
+            <form action="{{url_for('sort_by', question_id = question_id)}}"  method="POST">    
+                <input type="radio" name="sort_option" value="1" {%if sort_option=="1"%} checked {%endif%} onchange =this.form.submit() > Newest           
+                <input type="radio" name="sort_option" value="2" {%if sort_option=="2"%} checked {%endif%} onchange =this.form.submit() > Oldest         
+                <input type="radio" name="sort_option" value="3" {%if sort_option=="3"%} checked {%endif%} onchange =this.form.submit() > Most points
+                <input type="radio" name="sort_option" value="4" {%if sort_option=="4"%} checked {%endif%} onchange =this.form.submit() > Least points   
+            </form>   
+        </div>
     </div>
-
-    {%for i in answers: %}
-
-    <div class="post-container">
     
+    
+    {%for i in answers: %}
+    <div class="post-container">
         <div class="post-body"> <!--I SHOULD PROBABLY RENAME THIS INTO HEAD? I mean it's a head, but i don't feel like copypasitng-->
             <div class="post-author">
                 <b>Answer #{{loop.index}}</b>
@@ -90,6 +109,10 @@
             <div class="post-author">
                 Posted by: <b>{{i[0]}} </b> at {{i[3].strftime("%Y-%m-%d %H:%M:%S")}}
                 {%if session.username == i[0]%}
+                <form action="{{url_for('edit_answer',answer_id=i[4])}}" method ="post"> 
+                    <input type="submit" name="edit_answer" value="Edit">   
+                </form>
+                
                 <form action="{{url_for('delete_answer', question_id = question_id, sort_option=sort_option, answer_id=i[4])}}" method ="post"> 
                     <input type="submit" name="Delete" value="Delete"> 
                 </form>

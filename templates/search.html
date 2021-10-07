@@ -1,0 +1,50 @@
+{%extends "layout.html"%}
+
+
+{% block content %}
+
+
+
+<form action="/search" method="post">
+
+
+    <br>
+    <br>
+    <br>
+
+    Enter search words!
+    <br>
+    <br>
+    <textarea name="search" id ="search" rows="1" cols="88" placeholder =  "Search"></textarea>
+    <br>
+
+    <p><span id="searchWordCount"> 0/50 words</span></p> 
+
+    <script
+        src ="/static/wordCount.js"
+        questionArea = "search"
+        questionDisplay ="searchWordCount"
+        questionMin = "1"
+        questionMax = "50">
+    </script>
+
+    <br>
+    Search from:
+    <br>
+
+    <input type="checkbox" name="search_option" value="users"> Users       
+    <input type="checkbox" name="search_option" value="questions"> Questions
+    <input type="checkbox" name="search_option" value="answers"> Answers
+
+    <br>
+    <br>
+    <br>
+    <input type="submit" value="Search!">
+
+    <h1>{{message}}</h1>
+</form>
+
+
+
+
+{% endblock %}

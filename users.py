@@ -3,11 +3,19 @@ from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
-def fetch_users():
-    sql = "SELECT username FROM users"
-    result = db.session.execute(sql)
+def fetch_users(all, like):
+    
+    if all:
+        sql = "SELECT username FROM users"
+        result = db.session.execute(sql)
+    else:
+        sql ="SELECT username FROM users WHERE username LIKE :like"
+        result = db.session.execute(sql, {"like":like})
+    
     user_list = result.fetchall()
     return user_list
+
+
 
 def login(username, password):
     #checking if username and password are correct

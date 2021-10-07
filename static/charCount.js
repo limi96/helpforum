@@ -1,19 +1,19 @@
-var textId = document.currentScript.getAttribute('textArea');
-var textDisplay = document.currentScript.getAttribute('display');
+var titleId = document.currentScript.getAttribute('titleArea');
+var titleDisplay = document.currentScript.getAttribute('titleDisplay');
 
-const min = parseInt(document.currentScript.getAttribute('min')) 
-const max = parseInt(document.currentScript.getAttribute('max'))
+const titleMin = parseInt(document.currentScript.getAttribute('titleMin')) 
+const titleMax = parseInt(document.currentScript.getAttribute('titleMax'))
 
-document.getElementById(textId).addEventListener('keyup', function () {
+document.getElementById(titleId).addEventListener('keyup', function () {
     var words = this.value;
     var errorText = "";
     var line = " ------ ";
 
     charLength = words.length;
 
-    if (charLength < min) { errorText = line + "Required to be at least " + min + " characters long! ";}
+    if (charLength < titleMin) { errorText = line + "Required to be at least " + titleMin + " characters long! ";}
     
-    else if (count > max) {errorText = line + "Too many characters! ";}
+    else if (charLength > titleMax) { errorText = line + "Too many characters! ";}
 
-    document.getElementById(textDisplay).innerText = count + "/" + max +" characters " + errorText;
+    document.getElementById(titleDisplay).innerText = charLength + "/" + titleMax +" characters " + errorText;
 });

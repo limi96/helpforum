@@ -11,9 +11,12 @@ body {
     font-size: 10px;
 }
 
+
+
 .message {
-    margin-left: 5em;
-    margin-right:5em;
+    word-wrap: break-word;
+    max-width: 800px;
+    text-align: center;
 }
 
 .content {
@@ -33,18 +36,20 @@ body {
 }
 
 .post-head {
+    white-space: initial;
     border: solid #6435ff 1px;
     text-align: center;
     font-size: 25px;
     font-weight: bold;
     padding: 10px;
     border-radius: .5em;
+    word-wrap: break-word;
+    max-width: 800px;
 }
 
 .sort-options-container{
     padding: 20px; 
-    padding-left:9em;
-
+    padding-left:5em;
 }
 
 .post-container {
@@ -53,6 +58,11 @@ body {
 
 .post-body {
     display: flex;  
+}
+
+textarea, form input[type="text"],input[type="password"] {
+    border: solid #6435ff 2px;
+    border-radius: .5em;
 }
 
 .post-author {
@@ -69,6 +79,8 @@ body {
     padding-left: 10px;
     padding:10px;
     border-radius: .5em;
+    word-wrap: break-word;
+    max-width: 500px;
 }
 
 .points-container {
@@ -88,7 +100,6 @@ body {
     width: 60%; 
     margin-bottom: 0.5em;
     display: block;
-    border: solid #6435ff 0px;
     text-align: center;
 }
 
@@ -105,34 +116,41 @@ body {
     width: 100px; 
     border: solid #6435ff 0px;
 }
+
+
+
 */
+
 
 .nav-link {
     display:block;
     text-align: center;
     box-sizing: border-box; 
-    width:  110px;
+    width:  112px;
     background: #6435ff;
     color:      #ffffff;
     padding:   8px;
     font-size: 13px;
     float: left;
     border-radius: 2em;
+    margin-left: 1px;
+    margin-right:1px;
 }
 
 a:hover {
     background-color:#ffffff;
     color:#6435ff;
     border-color: #6435ff;
-    border: solid #6435ff 1px;
+    border: solid #6435ff 2px;
 }
 
 .question-link {
     border: solid #6435ff 1px;
     text-align: center;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
     padding: 10px;
     border-radius: .5em;
     display:block;
+    word-wrap: break-word;
 }

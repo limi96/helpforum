@@ -2,6 +2,19 @@ from db import db
 import users
 
 
+
+def query(query):
+    
+    sql ="SELECT id, question_title, question_content FROM user_questions WHERE question_title LIKE :like OR question_content LIKE :like"
+    result = db.session.execute(sql, {"like":query})
+
+
+
+    return result.fetchall()
+
+
+
+
 def vote(voteType, answer_id, answer_points):
     user_id = users.user_id()
     #first check if user is in points
@@ -64,7 +77,8 @@ def fetch_all_answers(question_id, sort_option):
 
     result = db.session.execute(sql, {"id":question_id})
     return result.fetchall()
-    
+
+
 
 def post_question(title, question):
     user_id = users.user_id()
@@ -90,6 +104,30 @@ def fetch_my_questions(user_id):
 def fetch_question(question_id):
     sql = "SELECT Q.question_title, Q.question_content, U.username, Q.send_time, U.id FROM user_questions Q, users U"\
         " WHERE Q.id = :id AND Q.user_id = U.id"
-    id = question_id
-    result = db.session.execute(sql, {"id":id})
+
+    result = db.session.execute(sql, {"id":question_id})
     return result.fetchone()
+
+
+def fetch_answer(answer_id):
+    sql = "SELECT answer_content FROM answers WHERE id=:id"
+
+    result = db.session.execute(sql, {"id":answer_id})
+    return result.fetchone()
+
+
+def commit_edit(type, id, title, content):
+    sql = "UPDATE "
+
+    if type=="question":
+        sql = "UPDATE user_questions SET question_content=:content, question_title=:title WHERE id=:id"
+        db.session.execute(sql, {"title":title, "content":content, "id":id})
+        db.session.commit()
+        return True
+        
+    if type=="answer":
+        sql = "UPDATE answers SET answer_content=:content WHERE id=:id"
+        db.session.execute(sql, {"content":content, "id":id})
+        db.session.commit()
+        return True
+

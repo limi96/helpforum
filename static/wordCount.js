@@ -1,8 +1,8 @@
-var textId = document.currentScript.getAttribute('textArea');
-var textDisplay = document.currentScript.getAttribute('display');
+var textId = document.currentScript.getAttribute('questionArea');
+var textDisplay = document.currentScript.getAttribute('questionDisplay');
 
-const min = parseInt(document.currentScript.getAttribute('min')) 
-const max = parseInt(document.currentScript.getAttribute('max'))
+const questionMin = parseInt(document.currentScript.getAttribute('questionMin')) 
+const questionMax = parseInt(document.currentScript.getAttribute('questionMax'))
 
 document.getElementById(textId).addEventListener('keyup', function () {
     var words = this.value;
@@ -14,9 +14,11 @@ document.getElementById(textId).addEventListener('keyup', function () {
     
     if (count == 1 && charLength == 0) {count = 0; }
 
-    if (count < min) { errorText = line + "Required to have at least " + min + " words! ";}
+    if (count < questionMin && charLength < 1500) { errorText = line + "Required to have at least " + questionMin + " words! ";}
     
-    else if (count > max) {errorText = line + "Too many words! ";}
+    else if (count > questionMax) {errorText = line + "Too many words! ";}
 
-    document.getElementById(textDisplay).innerText = count + "/" + max +" words " + errorText;
+    if (charLength >= 1500) {errorText = line + "Too many characters! Max 1500";}
+
+    document.getElementById(textDisplay).innerText = count + "/" + questionMax +" words " + errorText;
 });

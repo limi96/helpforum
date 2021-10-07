@@ -1,0 +1,63 @@
+{%extends "layout.html"%}
+
+{% block content %}
+{% if question_content %}
+
+<form action="{{url_for('commit_edit', id=id,type='question')}}" method="post">
+    Edit the Title 
+    <br>
+
+    <textarea name ="title" id = "title" rows="1" cols ="88">{{question_title}}</textarea>
+    <br>
+
+    <p><span id="charCount"> 0/150 characters</span></p>
+    
+    <script
+        src ="/static/charCount.js"
+        titleArea = "title"
+        titleDisplay ="charCount"
+        titleMin = "5"
+        titleMax = "150"
+        >
+    </script>
+    <br>
+    Edit the Question
+    <textarea name="question" id ="question" rows="5" cols="88">{{question_content}}</textarea>
+    <br>
+
+    <p><span id="questionWordCount"> 0/150 words</span></p> 
+
+    <script
+        src ="/static/wordCount.js"
+        questionArea = "question"
+        questionDisplay ="questionWordCount"
+        questionMin = "5"
+        questionMax = "150">
+    </script>
+    <input type="submit" value="Edit Question">
+    </form>
+
+
+
+{%else%}
+
+<form action="{{url_for('commit_edit',id=id,type='answer')}}" method="post">
+    Edit your answer!
+    <textarea name="answer" id ="answer" rows="5" cols="88">{{answer_content}}</textarea>
+    <br>
+
+    <p><span id="questionWordCount"> 0/150 words</span></p> 
+
+    <script
+        src ="/static/wordCount.js"
+        questionArea = "question"
+        questionDisplay ="questionWordCount"
+        questionMin = "5"
+        questionMax = "150">
+    </script>
+    <input type="submit" value="Edit Question">
+    </form>
+
+{%endif%}
+{% endblock %}
+

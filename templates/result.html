@@ -1,1 +1,44 @@
-Moikka {{name}}!
+{%extends "layout.html"%}
+
+
+{% block content %}
+
+    {% if "users" in options and user_list%}
+        <h1>Users</h1>
+        <ul>
+        {%for i in user_list: %}
+          <li>{{i[0]}}
+        {%endfor %}
+        </ul>
+    {%else%}
+        <h2>No results here :(</h2>
+    {%endif%}
+
+    {%if "questions" in options and question_list%}
+        <h1>Questions</h1>
+        <ul>
+        {%for i in question_list: %}
+          <li>{{i[1]}}
+        {%endfor %}
+        </ul>
+    {%else%}
+        <h2>No results here :(</h2>
+    {%endif%}
+
+    {%if "answers" in options and answer_list%}
+        <h1>Questions</h1>
+        <ul>
+        {%for i in answer_list: %}
+          <li>{{i[1]}}
+        {%endfor %}
+        </ul>
+    {%else%}
+        <h2>No results here :(</h2>
+    {%endif%}
+
+    {%if not user_list and not question_list and not answer_list%}
+    <h2>No results here :(</h2>
+    {%endif%}
+    
+
+{% endblock %}
