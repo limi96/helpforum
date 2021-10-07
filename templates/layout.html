@@ -2,39 +2,45 @@
 
 <html>
 
-<meta charset = "UTF-8">
-<title>HelpForum {%block title%} {%endblock%}</title>
+    <meta charset = "UTF-8">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>HelpForum {%block title%} {%endblock%}</title>
 
+<body>
 
+    {% if session.username%}
+    
+        <h1 class="title"> Welcome to HelpForum, {{session.username}} ! </h1>
 
+        <div class="nav-panel">
+             <a class ="nav-link" href="/">                 Main Page        </a>
+             <a class ="nav-link" href="/logout">           Logout           </a>
+             <a class ="nav-link" href="/post_question">    Post a Question  </a>
+             <a class ="nav-link" href="/my_questions">     My Questions     </a>
+             <a class ="nav-link" href="/all_questions">    All Questions    </a>
+             <a class ="nav-link" href="/all_users">        All Accounts     </a>
+        </div>
+    
+    {% else %}
 
-{% if session.username%}
+        <h1 class="title"> Welcome to HelpForum! </h1>
+        <div class="nav-panel">
+            <a class ="nav-link" href="/">                Main Page       </a>
+            <a class ="nav-link" href="/login">           Login           </a>
+            <a class ="nav-link" href="/register">        Register        </a>
+            <a class ="nav-link" href="/all_users">       All Accounts    </a>
+            <a class ="nav-link" href="/all_questions">   User Questions  </a>
+            <a class ="nav-link" href="/all_questions">   About           </a>
+        </div>
 
-<h1> Welcome to HelpForum, {{session.username}} ! </h1>
+    {%endif%}
+    
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
 
-<a href="/"> Main page</a>
-<a href="/logout">Logout</a>
+    
 
-<a href="/postquestion"> Post a question</a>
-<a href="/myquestions"> My questions</a>
-<a href="/allquestions"> All questions</a>
-<a href="/allusers"> All accounts</a>
-
-
-{% else %}
-<h1> Welcome to HelpForum! </h1>
-<a href="/"> Main page</a>
-<a href="/login">Login</a>
-<a href="/register"> Register</a>
-<a href="/allusers"> All accounts</a>
-<a href="/allquestions"> User questions</a>
-{%endif%}
-
-<br>
-<br>
-{% block content %}
-{% endblock %}
-
-
-
+</body>
 </html>

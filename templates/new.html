@@ -2,73 +2,112 @@
 
 {% block content %}
 
-<h2>
-Question: {{ title }}
-</h2>
+    <div class="post-container">
 
+        <div class="post-head">
+            {{ title }}
+        </div>
 
-Description of question: {{ content }}
-<br> 
-<br> 
-<br> 
-Posted by: <b>{{username}} </b> at {{time.strftime("%Y-%m-%d %H:%M:%S")}} 
+        <div class="post-body">
+            <div class="post-author">
+                <p class="user-info"> Posted by: <b>{{username}} </b> <br> {{time.strftime("%Y-%m-%d %H:%M:%S")}}    </p>
+                 
+                {%if session.username == username%}
+                    <form action="{{url_for('delete_question', question_id = question_id, sort_option=sort_option)}}" method ="post"> 
+                        <input type="submit" name="Delete" value="Delete"> 
+                    </form>
+                {%else%}
+                {%endif%}
+            </div>
+            <div class="post-content">
+                {{ content }}
+            </div>
+        </div>
+    </div>
 
-<form action="{{url_for('deleteQuestion', question_id = question_id, option=option)}}" method ="post"> 
-    <input type="submit" name="Delete" value="Delete"> 
-</form>
-
-<br>
-<br> 
-<br>
-<form action="{{url_for('sortBy', question_id = question_id)}}"  method="POST">    
-    <input type="radio" name="option" value="1" {%if option=="1"%} checked {%endif%} onchange =this.form.submit()  > Newest           
-    <input type="radio" name="option" value="2" {%if option=="2"%} checked {%endif%} onchange =this.form.submit() > Oldest         
-    <input type="radio" name="option" value="3" {%if option=="3"%} checked {%endif%} onchange =this.form.submit() > Most points
-    <input type="radio" name="option" value="4" {%if option=="4"%} checked {%endif%} onchange =this.form.submit() > Least points   
-</form>
-
-{% if not answers %}
-<br> 
-<br>
-There are no answers yet :(
-<br>
-Be the first one :)!
-
-{%else%}
-    {%for i in answers: %}
-    <h2> Answer #{{loop.index}}</h2>
-    {{i[2]}}
-    <br>
-    <br>
-    Posted by: <b>{{i[0]}} </b> at {{i[3].strftime("%Y-%m-%d %H:%M:%S")}}
-    <form action="{{url_for('giveVote', question_id = question_id, answer_id=i[4], answer_points=i[5],option=option)}}" method="post">
-    <input type="submit" name="vote" value="Upvote!">
-    </form>
-    <form action="{{url_for('giveVote', question_id = question_id, answer_id=i[4], answer_points=i[5],option=option)}}" method="post">
-        <input type="submit" name ="vote" value="Downvote!">
-        </form>
-    Answer points: {{i[5]}}  
-
-
-    {%if session.username == i[0]%}
-    <form action="{{url_for('deleteAnswer', question_id = question_id, option=option, answer_id=i[4])}}" method ="post"> 
-        <input type="submit" name="Delete" value="Delete"> 
-    </form>
-        <br> 
+    {%if session.username %}
         <br>
+        <b> Post a new answer! </b>
+        <form action="{{url_for('post_answer', question_id = question_id, sort_option=sort_option)}}" method="post">
+            <textarea name="answer" rows="2" cols="88" placeholder = "Write your answer here"></textarea>
+            <br>
+            <input type="submit" value="Post answer">
+        </form>
     {%else%}
+        Login to answer!
     {%endif%}
 
-    <hr>
+    {% if not answers %}
+        <br> 
+        There are no answers yet :(
+        <br>
+        Be the first one :)!
+
+
+    {%else%}
+
+    <div class="sort-options-container">
+        <form action="{{url_for('sort_by', question_id = question_id)}}"  method="POST">    
+            <input type="radio" name="sort_option" value="1" {%if sort_option=="1"%} checked {%endif%} onchange =this.form.submit() > Newest           
+            <input type="radio" name="sort_option" value="2" {%if sort_option=="2"%} checked {%endif%} onchange =this.form.submit() > Oldest         
+            <input type="radio" name="sort_option" value="3" {%if sort_option=="3"%} checked {%endif%} onchange =this.form.submit() > Most points
+            <input type="radio" name="sort_option" value="4" {%if sort_option=="4"%} checked {%endif%} onchange =this.form.submit() > Least points   
+        </form>
+    </div>
+
+    {%for i in answers: %}
+
+    <div class="post-container">
+    
+        <div class="post-body"> <!--I SHOULD PROBABLY RENAME THIS INTO HEAD? I mean it's a head, but i don't feel like copypasitng-->
+            <div class="post-author">
+                <b>Answer #{{loop.index}}</b>
+            </div>
+
+            <div class="post-content">
+                <div class="points-container">
+                    <div class="points-element">
+                        <form action="{{url_for('give_vote', question_id = question_id, answer_id=i[4], answer_points=i[5],sort_option=sort_option)}}" method="post">
+                            <input type="submit" name="vote" value="Upvote!">
+                        </form>
+                    </div>                    
+                
+                    <div class="points-element">
+                        <form action="{{url_for('give_vote', question_id = question_id, answer_id=i[4], answer_points=i[5],sort_option=sort_option)}}" method="post">
+                            <input type="submit" name ="vote" value="Downvote!">
+                        </form>
+                    </div>
+                    <div class="points-element">
+                        Answer points: {{i[5]}} 
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    
+        <div class="post-body">
+            <div class="post-author">
+                Posted by: <b>{{i[0]}} </b> at {{i[3].strftime("%Y-%m-%d %H:%M:%S")}}
+                {%if session.username == i[0]%}
+                <form action="{{url_for('delete_answer', question_id = question_id, sort_option=sort_option, answer_id=i[4])}}" method ="post"> 
+                    <input type="submit" name="Delete" value="Delete"> 
+                </form>
+                {%else%}
+                {%endif%}
+            </div>
+        
+            <div class="post-content">
+                {{i[2]}}
+            </div>
+        </div>
+    </div>
+    
     {%endfor %}
+    {%endif%}
 
-{%endif%}
 
-<h5> Post a new answer! </h5>
-<form action="{{url_for('giveAnswer', question_id = question_id, option=option)}}" method="post">
-    <textarea name="answer" rows="2" cols="60" placeholder = "Write your answer here"></textarea>
-    <br>
-    <input type="submit" value="Post answer">
-    </form>
+
+
 
 {% endblock %}

@@ -3,71 +3,75 @@ import users
 import questions as q
 from flask import redirect, render_template, request, session, url_for
 
+@app.route("/<question_id>/<answer_id>/<answer_points>/<sort_option>", methods =["POST"])
+def give_vote(question_id, answer_id, answer_points,sort_option):
+    vote_type = request.form.get("vote")
+    q.vote(vote_type, answer_id, answer_points)
+    return redirect(url_for('question_url', question_id = question_id,sort_option=sort_option))
 
-@app.route("/<question_id>/<answer_id>/<answer_points>/<option>", methods =["POST"])
-def giveVote(question_id, answer_id, answer_points,option):
-    voteType = request.form.get("vote")
-    q.vote(voteType, answer_id, answer_points)
-    return redirect(url_for('questionURL', question_id = question_id,option=option))
-
-@app.route("/<question_id>/<option>/<answer_id>", methods = ["POST"])
-def deleteAnswer(question_id, option, answer_id):
+@app.route("/<question_id>/<sort_option>/<answer_id>", methods = ["POST"])
+def delete_answer(question_id, sort_option, answer_id):
     q.delete("answers", answer_id)
-    return redirect(url_for('questionURL', question_id = question_id, option=option))
+    return redirect(url_for('question_url', question_id = question_id, sort_option=sort_option))
 
 @app.route("/<question_id>", methods = ["POST"])
-def deleteQuestion(question_id):
+def delete_question(question_id):
     q.delete("user_questions", question_id)
-    return render_template("index.html", message = "Question successfully deleted!")
+    return render_template("success.html", message = "Question successfully deleted!")
 
-@app.route("/sortBy/<question_id>", methods = ["POST"])
-def sortBy(question_id):
-    option = request.form["option"]
-    return redirect(url_for('questionURL', question_id = question_id, option=option))
+@app.route("/sort_by/<question_id>", methods = ["POST"])
+def sort_by(question_id):
+    sort_option = request.form["sort_option"]
+    return redirect(url_for('question_url', question_id = question_id, sort_option=sort_option))
 
 
-@app.route("/<question_id>/<option>")
-def questionURL(question_id,option):
+@app.route("/<question_id>/<sort_option>")
+def question_url(question_id,sort_option):
 
-    question = q.fetchQuestion(question_id)
-    answers = q.fetchAllAnswers(question_id, option)
+    question = q.fetch_question(question_id)
+    answers = q.fetch_all_answers(question_id, sort_option)
 
     return render_template("new.html", question_id = question_id, title = question[0], 
             content = question[1], username = question[2],
-             time = question[3], user_id = question[4], answers = answers, option=option)
+             time = question[3], user_id = question[4], answers = answers, sort_option=sort_option)
 
-@app.route("/<question_id>/<option>", methods =["POST"])
-def giveAnswer(question_id, option):
+@app.route("/<question_id>/<sort_option>", methods =["POST"])
+def post_answer(question_id, sort_option):
     answer = request.form["answer"]
-    if q.postAnswer(answer,question_id):
-        return redirect(url_for('questionURL', question_id = question_id, option=option))
+    if q.save_answer(answer,question_id):
+        return redirect(url_for('question_url', question_id = question_id, sort_option=sort_option))
     else:
         return render_template("errors.html", message="Failed to post question")
 
-@app.route("/allquestions")
-def allquestions():
-    questionlist = q.fetchAllQuestions()
-    return render_template("questions.html", questionlist = questionlist)
+@app.route("/all_questions")
+def all_questions():
+    question_list = q.fetch_all_questions()
+    return render_template("questions.html", question_list = question_list)
 
-@app.route("/myquestions")
-def myquestions():
+@app.route("/my_questions")
+def my_questions():
     id = users.user_id()
-    questionlist = q.fetchMyQuestions(id)
-    return render_template("questions.html", questionlist = questionlist)
+    question_list = q.fetch_my_questions(id)
+    return render_template("questions.html", question_list = question_list)
 
-
-@app.route("/postquestion", methods=["GET","POST"])
-def postquestion():
+@app.route("/post_question", methods=["GET","POST"])
+def post_question():
     if request.method == "GET":
-        return render_template("postquestion.html")
+        return render_template("post_question.html")
 
     if request.method == "POST":
         title = request.form["title"]
         question = request.form["question"]
-        if q.postQuestion(title, question):
-            return render_template("index.html", message ="Successfully posted!")
+
+        #if len(title) >= 2 and len(title) <= 150:
+
+        #Description length 500 
+
+        if q.post_question(title, question):
+            return render_template("success.html", message ="Successfully posted!")
         else:
             return render_template("errors.html", message="Failed to post question")
+
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
@@ -78,20 +82,22 @@ def register():
         #add new user with username and password    
         username = request.form["username"]
         password = request.form["password"]
-        passwordrepeat = request.form["passwordrepeat"]
+        password_repeat = request.form["password_repeat"]
 
-        if password != passwordrepeat:
+        if password != password_repeat:
             return render_template("errors.html", message="Passwords do not match")
-        if users.register(username, password):
-            return render_template("index.html",message = "Thank you! Please login to proceed")
-        else:
-            return render_template("errors.html", message = "Registration failed")
 
+        if len(username) > 1 and len(username) <= 50:
+            if users.register(username, password):
+                return render_template("success.html",message = "Thank you! Please login to proceed")
+            else:
+                return render_template("errors.html", message = "Registration failed: User already exists")
+        return render_template("errors.html", message="Registration failed: Username not within 1-50 characters")
 
-@app.route("/allusers")
-def allusers():
-    userlist = users.fetchusers()
-    return render_template("allusers.html", userlist = userlist)
+@app.route("/all_users")
+def all_users():
+    user_list = users.fetch_users()
+    return render_template("all_users.html", user_list = user_list)
 
 
 @app.route("/")

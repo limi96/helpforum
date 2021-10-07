@@ -3,19 +3,23 @@
 
     {% block content %}
     
-    {% if not questionlist %}
+        {% if not question_list %}
 
-    There are no questions :( !
+            There are no questions :( !
 
-    {%else%}
-    Click on the question to browse it!
-    <ul>
-    {%for i in questionlist: %}
-    <li> <a href="{{url_for('questionURL',question_id = i[1], option = 2)}}"> {{i[0]}} </a>
-    {%endfor %}
-    </ul>
+        {%else%}
+            
+            Click on the question to browse it!
+            <br>
+            <h3>Number of replies?!!!!!!!!!!!!!!!!!!!!!!! and other information!</h3>
 
-    {%endif%}
+            <ul>
+                {%for i in question_list: %}
+                    <a class="question-link" href="{{url_for('question_url',question_id = i[1], sort_option = 2)}}"> {{i[0]}} </a>
+                {%endfor %}
+            </ul>
+     
+         {%endif%}
 
 
     {% endblock %}

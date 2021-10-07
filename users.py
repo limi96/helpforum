@@ -3,11 +3,11 @@ from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
-def fetchusers():
+def fetch_users():
     sql = "SELECT username FROM users"
     result = db.session.execute(sql)
-    userlist = result.fetchall()
-    return userlist
+    user_list = result.fetchall()
+    return user_list
 
 def login(username, password):
     #checking if username and password are correct

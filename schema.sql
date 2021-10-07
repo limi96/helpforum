@@ -1,6 +1,6 @@
 CREATE TABLE users (	
 	id SERIAL PRIMARY KEY, 
-	username VARCHAR(144),
+	username VARCHAR(144) NOT NULL UNIQUE,
 	password VARCHAR(144),
 	creation_time TIMESTAMP
 );
