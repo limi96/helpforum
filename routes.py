@@ -112,7 +112,7 @@ def edit_question(question_id):
         id = question_id, 
         question_title = question.question_title, 
         question_content = question.question_content)
-        
+
 
 @app.route("/edit_answer/<answer_id>", methods = ["POST"])
 def edit_answer(answer_id):
@@ -262,7 +262,6 @@ def register():
                 return render_template(
                     "success.html",
                     message = "Thank you! You are now logged in!")
-
             else:
                 return render_template(
                     "errors.html", 
@@ -270,7 +269,6 @@ def register():
         return render_template(
             "errors.html", 
             message="Registration failed: Username not within 1-15 characters")
-
 
 @app.route("/")
 def index():    
