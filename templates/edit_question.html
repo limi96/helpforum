@@ -1,0 +1,43 @@
+{%extends "layout.html"%}
+
+{% block content %}
+
+<form action="{{url_for('commit_edit', id=id,type='question')}}" method="post">
+    Edit the Title 
+    <br>
+
+    <textarea name ="title" id = "title" rows="1" cols ="88">{{question_title}}</textarea>
+    <br>
+
+    <p><span id="charCount"> 0/150 characters</span></p>
+    
+    <script
+        src ="/static/charCount.js"
+        titleArea = "title"
+        titleDisplay ="charCount"
+        titleMin = "5"
+        titleMax = "150"
+        >
+    </script>
+    <br>
+    Edit the Question
+    <textarea name="question" id ="question" rows="5" cols="88">{{question_content}}</textarea>
+    <br>
+
+    <p><span id="questionWordCount"> 0/200 words</span></p> 
+
+    <script
+        src ="/static/wordCount.js"
+        questionArea = "question"
+        questionDisplay ="questionWordCount"
+        questionMin = "5"
+        questionMax = "200">
+    </script>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input type="submit" value="Edit Question">
+    </form>
+
+
+
+{% endblock %}
+

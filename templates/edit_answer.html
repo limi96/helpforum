@@ -1,0 +1,27 @@
+{%extends "layout.html"%}
+
+{% block content %}
+
+<form action="{{url_for('commit_edit',id=id,type='answer')}}" method="post">
+    Edit your answer!
+    <textarea name="answer" id ="answer" rows="5" cols="88">{{answer_content}}</textarea>
+    <br>
+
+    <p><span id="answerWordCount"> 0/100 words</span></p> 
+
+    <script
+        src ="/static/wordCount.js"
+        questionArea = "answer"
+        questionDisplay ="answerWordCount"
+        questionMin = "5"
+        questionMax = "100">
+    </script>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input type="submit" value="Edit Answer">
+    </form>
+
+{% endblock %}
+
+
+
+

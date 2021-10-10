@@ -83,7 +83,7 @@ def delete_answer(question_id, sort_option, answer_id):
 
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
-        
+
     q.delete("answers", answer_id)
     return redirect(url_for("question_url", question_id = question_id, sort_option=sort_option))
 
@@ -106,15 +106,13 @@ def edit_question(question_id):
         
     question = q.fetch_question(question_id)
 
-    question_title   = question[0]
-    question_content = question[1]
-
     return render_template(
-        "edit.html",
+        "edit_question.html",
         question = question, 
         id = question_id, 
-        question_title = question_title, 
-        question_content = question_content)
+        question_title = question.question_title, 
+        question_content = question.question_content)
+        
 
 @app.route("/edit_answer/<answer_id>", methods = ["POST"])
 def edit_answer(answer_id):
@@ -123,9 +121,10 @@ def edit_answer(answer_id):
         abort(403)
     
     answer = q.fetch_answer(answer_id)
-    answer_content = answer[0]
+    answer_content = answer.answer_content
 
-    return render_template("edit.html", id = answer_id, answer_content=answer_content)
+
+    return render_template("edit_answer.html", id = answer_id, answer_content=answer_content)
     
 
 @app.route("/commit_edit/<id>/<type>", methods =["POST"])
@@ -139,7 +138,17 @@ def commit_edit(id,type):
         title = request.form["title"]
         content = request.form["question"]
 
-        #Lisää syötteiden hallinta tähän 
+        words = content.split()
+
+        if len(title) < 5 or len(title) > 150:
+            return render_template(
+            "errors.html", 
+            message="Title must be within 5-150 characters")
+
+        if len(words) < 5 or len(words) > 200 or len(content) > 2000:
+            return render_template(
+                "errors.html", 
+                message="The description must be within 5-200 words and no longer than 2000 characters")
 
         if q.commit_edit("question", id, title, content):
             return render_template("success.html", message ="Successfully Edited!")
@@ -152,6 +161,13 @@ def commit_edit(id,type):
             abort(403)
 
         content = request.form["answer"]
+        words = content.split()
+
+        if len(words) < 5 or len(words) > 100 or len(content) > 2000:
+            return render_template(
+            "errors.html", 
+            message="The answer must be within 5-100 words and no longer than 2000 characters")
+
         if q.commit_edit("answer", id, "", content):
             return render_template("success.html", message ="Successfully Edited!")
         else:
@@ -165,12 +181,18 @@ def post_answer(question_id, sort_option):
         abort(403)
 
     answer = request.form["answer"]
+
+    words = answer.split()
+
+    if len(words) < 5 or len(words) > 100 or len(answer) > 2000:
+        return render_template(
+            "errors.html", 
+            message="The answer must be within 5-100 words and no longer than 2000 characters")
+
     if q.save_answer(answer,question_id):
         return redirect(url_for("question_url", question_id = question_id, sort_option=sort_option))
     else:
         return render_template("errors.html", message="Failed to post question")
-
-
 
 
 @app.route("/all_questions")
@@ -198,14 +220,26 @@ def post_question():
         title = request.form["title"]
         question = request.form["question"]
 
-        #if len(title) >= 5 and len(title) <= 150:
+        words = question.split()
 
-        #200 words and 1500 characters at least 5 words! 
+        if len(title) < 5 or len(title) > 150:
+            return render_template(
+                "errors.html", 
+                message="Title must be within 5-150 characters")
+
+        if len(words) < 5 or len(words) > 200 or len(question) > 2000:
+            return render_template(
+                "errors.html", 
+                message="The description must be within 5-200 words and no longer than 2000 characters")
 
         if q.post_question(title, question):
-            return render_template("success.html", message ="Successfully posted!")
+            return render_template(
+                "success.html", 
+                message ="Successfully posted!")
         else:
-            return render_template("errors.html", message="Failed to post question")
+            return render_template(
+                "errors.html",
+                 message="Failed to post question")
 
 
 @app.route("/register", methods = ["GET", "POST"])
@@ -218,6 +252,7 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         password_repeat = request.form["password_repeat"]
+
 
         if password != password_repeat:
             return render_template("errors.html", message="Passwords do not match")
