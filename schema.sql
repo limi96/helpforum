@@ -3,6 +3,7 @@ CREATE TABLE users (
 	username VARCHAR(144) NOT NULL UNIQUE,
 	password VARCHAR(144),
 	creation_time TIMESTAMP
+	is_admin BOOLEAN,
 );
 
 CREATE TABLE user_questions (
@@ -11,6 +12,7 @@ CREATE TABLE user_questions (
 	question_content TEXT,
 	user_id INTEGER REFERENCES users ON DELETE CASCADE,
 	send_time TIMESTAMP
+	edited_time TIMESTAMP
 );
 
 CREATE TABLE answers (
@@ -19,7 +21,8 @@ CREATE TABLE answers (
 	answer_points INTEGER,
 	question_id INTEGER REFERENCES user_questions ON DELETE CASCADE,
 	user_id INTEGER REFERENCES users ON DELETE CASCADE,
-	send_time TIMESTAMP	
+	send_time TIMESTAMP
+	edited_time TIMESTAMP	
 );
 
 CREATE TABLE points (
@@ -27,5 +30,4 @@ CREATE TABLE points (
   answer_id INTEGER REFERENCES answers ON DELETE CASCADE,
   user_id INTEGER REFERENCES users ON DELETE CASCADE
 );
-
 

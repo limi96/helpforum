@@ -1,44 +1,55 @@
 {%extends "layout.html"%}
 
 
+{% block title %} 
+- Result
+{% endblock %}
+
 {% block content %}
 
-    {% if "users" in options and user_list%}
+<div class="message">
+    {%if "users" in options%}
         <h1>Users</h1>
-        <ul>
-        {%for i in user_list: %}
-          <li>{{i[0]}}
-        {%endfor %}
-        </ul>
-    {%else%}
-        <h2>No results here :(</h2>
+
+        {% if user_list%}    
+            <ul>
+            {%for i in user_list: %}
+              <li>{{i[0]}}
+            {%endfor %}
+            </ul>
+        {%else%}
+            <h2>No results here :(</h2>
+        {%endif%}
     {%endif%}
 
-    {%if "questions" in options and question_list%}
+    {%if "questions" in options%}
         <h1>Questions</h1>
-        <ul>
-        {%for i in question_list: %}
-          <li>{{i[1]}}
-        {%endfor %}
-        </ul>
-    {%else%}
-        <h2>No results here :(</h2>
-    {%endif%}
 
-    {%if "answers" in options and answer_list%}
-        <h1>Questions</h1>
-        <ul>
-        {%for i in answer_list: %}
-          <li>{{i[1]}}
-        {%endfor %}
-        </ul>
-    {%else%}
-        <h2>No results here :(</h2>
-    {%endif%}
+        {%if question_list%}
+            <ul>
+            {%for i in question_list: %}
+              <li>{{i[1]}}
+            {%endfor %}
+            </ul>
+        {%else%}
+            <h2>No results here :(</h2>
+        {%endif%}
+    {%endif%}    
 
-    {%if not user_list and not question_list and not answer_list%}
-    <h2>No results here :(</h2>
+    {%if "answers" in options%}
+        <h1>Answers</h1>        
+        
+        {%if answer_list%}
+            <ul>
+            {%for i in answer_list: %}
+              <li>{{i[1]}}
+            {%endfor %}
+            </ul>
+        {%else%}
+            <h2>No results here :(</h2>
+        {%endif%}
+
     {%endif%}
-    
+</div>
 
 {% endblock %}

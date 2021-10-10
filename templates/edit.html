@@ -34,11 +34,9 @@
         questionMin = "5"
         questionMax = "150">
     </script>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="submit" value="Edit Question">
     </form>
-
-
-
 {%else%}
 
 <form action="{{url_for('commit_edit',id=id,type='answer')}}" method="post">
@@ -55,7 +53,8 @@
         questionMin = "5"
         questionMax = "150">
     </script>
-    <input type="submit" value="Edit Question">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input type="submit" value="Edit Answer">
     </form>
 
 {%endif%}

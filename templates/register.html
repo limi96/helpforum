@@ -1,18 +1,29 @@
 {%extends "layout.html"%}
 
+{% block title %} 
+- Register
+{% endblock %}
+
 {% block content %}
 
-<h1>Please register </h1> 
+{%if session.username%} 
 
-<form action="/register" method="POST">
-Username: <input type="text" name="username">
-<p>
-Password: <input type="password" name="password">
-<p>
-Retype password: <input type="password" name="password_repeat">
-<p>
-<input type="submit" value="Create account!">
+    <h1 style="text-align:center">You cannot register when you are already logged in! </h1> 
 
-</form>
+{%else%}
+    <h1>Please register </h1> 
+    
+    <form action="/register" method="POST">
+    Username: <input type="text" name="username" placeholder="Max 15 characters">
+    <p>
+    Password: <input type="password" name="password">
+    <p>
+    Retype password: <input type="password" name="password_repeat">
+    <p>
+    <input type="submit" value="Create account!">
+    
+    </form>
+
+{%endif%}
 
 {% endblock %}

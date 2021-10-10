@@ -1,13 +1,12 @@
 {%extends "layout.html"%}
 
+{% block title %} 
+- Search
+{% endblock %}
 
 {% block content %}
 
-
-
 <form action="/search" method="post">
-
-
     <br>
     <br>
     <br>
@@ -28,9 +27,8 @@
         questionMax = "50">
     </script>
 
-    <br>
-    Search from:
-    <br>
+    <b>Search from:</b>
+    
 
     <input type="checkbox" name="search_option" value="users"> Users       
     <input type="checkbox" name="search_option" value="questions"> Questions
@@ -39,7 +37,9 @@
     <br>
     <br>
     <br>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="submit" value="Search!">
+    
 
     <h1>{{message}}</h1>
 </form>

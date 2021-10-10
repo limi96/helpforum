@@ -14,11 +14,11 @@ document.getElementById(textId).addEventListener('keyup', function () {
     
     if (count == 1 && charLength == 0) {count = 0; }
 
-    if (count < questionMin && charLength < 1500) { errorText = line + "Required to have at least " + questionMin + " words! ";}
+    if (count < questionMin && charLength < 2000) { errorText = line + "Required to have at least " + questionMin + " words! ";}
     
     else if (count > questionMax) {errorText = line + "Too many words! ";}
 
-    if (charLength >= 1500) {errorText = line + "Too many characters! Max 1500";}
+    if (charLength >= 2000) {errorText = line + "Too many characters! Max 2000";}
 
     document.getElementById(textDisplay).innerText = count + "/" + questionMax +" words " + errorText;
 });

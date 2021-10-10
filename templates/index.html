@@ -1,24 +1,51 @@
 
 {%extends "layout.html"%}
 
+{% block title %} 
+- Main Page
+{% endblock %}
 
 {% block content %}
 
-<title>Etusivu</title>
+{% if not display_list %}
 
-{%if not message %}
-Hello my friend :)
+There are no questions :( !
 
 {%else%}
-{{message}}
+
+    <h2 style="text-align: center;"> Top 5 quesitons with the most recent answers! </h2>
+
+    <div class="index-head">
+        
+        <div class="index-question-title">   Title     </div>
+        <div class="index-author">Posted by </div> 
+        <div class="index-latest">   Latest reply     </div>
+        
+    </div>
+    
+    <div class="index-container">
+        {%for question in display_list: %}
+            <div class="index-body">
+                
+                <a class ="index-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
+                <div class="index-user">{{question.username}} </div> 
+                <div class="index-time">
+                    <p>{{question.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>    
+                </div>
+            </div>
+        {%endfor %}
+        
+    </div>
+
+
+    
+        
+        
+    
+
+
+
 {%endif%}
 
 {% endblock %}
-
-<!---
-<form action ="/register" method= "POST"></form>
-OR
-<a href="/register"> Register </a>
---->
-
 
