@@ -163,10 +163,10 @@ def commit_edit(id,type):
         content = request.form["answer"]
         words = content.split()
 
-        if len(words) < 5 or len(words) > 100 or len(content) > 2000:
+        if len(words) < 2 or len(words) > 100 or len(content) > 2000:
             return render_template(
             "errors.html", 
-            message="The answer must be within 5-100 words and no longer than 2000 characters")
+            message="The answer must be within 2-100 words and no longer than 2000 characters")
 
         if q.commit_edit("answer", id, "", content):
             return render_template("success.html", message ="Successfully Edited!")
@@ -184,10 +184,10 @@ def post_answer(question_id, sort_option):
 
     words = answer.split()
 
-    if len(words) < 5 or len(words) > 100 or len(answer) > 2000:
+    if len(words) < 2 or len(words) > 100 or len(answer) > 2000:
         return render_template(
             "errors.html", 
-            message="The answer must be within 5-100 words and no longer than 2000 characters")
+            message="The answer must be within 2-100 words and no longer than 2000 characters")
 
     if q.save_answer(answer,question_id):
         return redirect(url_for("question_url", question_id = question_id, sort_option=sort_option))
