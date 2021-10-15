@@ -12,11 +12,11 @@
         <h1>Users</h1>
 
         {% if user_list%}    
-            <ul>
-            {%for i in user_list: %}
-              <li>{{i[0]}}
+
+            {%for user in user_list: %}
+                <p class ="question-link"> {{user.username}}</p> 
             {%endfor %}
-            </ul>
+            
         {%else%}
             <h2>No results here :(</h2>
         {%endif%}
@@ -26,11 +26,11 @@
         <h1>Questions</h1>
 
         {%if question_list%}
-            <ul>
-            {%for i in question_list: %}
-              <li>{{i[1]}}
+            
+            {%for question in question_list: %}
+                <a class="question-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
             {%endfor %}
-            </ul>
+            
         {%else%}
             <h2>No results here :(</h2>
         {%endif%}
@@ -40,11 +40,18 @@
         <h1>Answers</h1>        
         
         {%if answer_list%}
-            <ul>
-            {%for i in answer_list: %}
-              <li>{{i[1]}}
+        
+        {%for question in question_list: %}
+            {%for answer in answer_list: %}
+            <p class ="question-link"> {{answer.answer_content}}
+                <br>
+                Link to question: 
+                <br>
+                <a href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
+            </p> 
             {%endfor %}
-            </ul>
+        {%endfor %}
+            
         {%else%}
             <h2>No results here :(</h2>
         {%endif%}

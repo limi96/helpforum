@@ -11,17 +11,11 @@
 
         There are no questions :( !
 
-    {%else%}
-        
-        
-
-        <ul>
-            {%for question in question_list: %}
-                <a class="question-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
-            {%endfor %}
-        </ul>
-    
-        {%endif%}
+    {%else%}        
+        {%for question in question_list: %}
+            <a class="question-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
+        {%endfor %}        
+    {%endif%}
 
 
 {% endblock %}

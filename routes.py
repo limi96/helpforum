@@ -7,6 +7,16 @@ from flask import redirect, render_template, request, session, url_for, abort
 #routes_questions.py
 #routes_answers.py
 
+@app.route("/all_questions")
+def all_questions():
+    question_list = q.fetch_all_questions()
+    return render_template("questions.html", question_list = question_list)
+
+@app.route("/my_questions")
+def my_questions():
+    id = users.user_id()
+    question_list = q.fetch_my_questions(id)
+    return render_template("questions.html", question_list = question_list)
 
 @app.route("/all_users")
 def all_users():
@@ -33,11 +43,9 @@ def search():
             query = request.form["search"]
             query = "%"+query+"%"
 
-            user_list = users.fetch_users(False,query)  if "users"      in options else None
-
-            question_list = q.question_query(query)     if "questions"  in options else None
-
-            answer_list   = q.answer_query(query)       if "answers"    in options else None
+            user_list = users.fetch_users(False,query)  if "users"                  in options else None
+            answer_list   = q.answer_query(query)       if "answers"                in options else None
+            question_list = q.question_query(query)     if "questions" or "answers" in options else None
 
             return render_template(
                 "result.html", 
@@ -195,16 +203,7 @@ def post_answer(question_id, sort_option):
         return render_template("errors.html", message="Failed to post question")
 
 
-@app.route("/all_questions")
-def all_questions():
-    question_list = q.fetch_all_questions()
-    return render_template("questions.html", question_list = question_list)
 
-@app.route("/my_questions")
-def my_questions():
-    id = users.user_id()
-    question_list = q.fetch_my_questions(id)
-    return render_template("questions.html", question_list = question_list)
 
 @app.route("/post_question", methods=["GET","POST"])
 def post_question():

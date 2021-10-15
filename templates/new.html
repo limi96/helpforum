@@ -3,7 +3,6 @@
 {% block content %}
 
     <div class="post-container">
-
         <div class="post-head">
             {{question.question_title }}
         </div>
@@ -93,7 +92,7 @@
     {%for answer in answers: %}
 
     <div class="post-container">
-        <div class="post-body">
+        <div class="post-body"> <!--ACTUALLY THIS IS THE HEADER!-->
             <div class="post-author">
                 <b>Answer #{{loop.index}}</b>
             </div>
@@ -128,6 +127,7 @@
                 {{answer.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}}</p>
 
                 {%if session.username == answer.username or session.username in admins %}
+
                 <form action="{{url_for('edit_answer',answer_id=answer.id)}}" method ="post"> 
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                     <input type="submit" name="edit_answer" value="Edit">   

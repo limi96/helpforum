@@ -2,15 +2,14 @@ from db import db
 from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash, secrets
 
-
 def fetch_users(all, like):
     if all:
         sql = "SELECT username FROM users"
         result = db.session.execute(sql)
     else:
-        sql ="SELECT username FROM users WHERE username LIKE :like"
+        sql ="SELECT username FROM users WHERE username ILIKE :like"
         result = db.session.execute(sql, {"like":like})
-    
+
     user_list = result.fetchall()
     return user_list
 

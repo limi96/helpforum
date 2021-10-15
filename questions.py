@@ -3,17 +3,20 @@ import users
 
 
 def index_query():
-    sql = "SELECT Q.question_title, Q.id, U.username, A.send_time FROM users U, user_questions Q, answers A " \
-    "WHERE A.question_id = Q.id AND Q.user_id = U.id ORDER BY A.send_time DESC LIMIT 5"
+    sql = "SELECT Q.question_title, Q.id, U.username, MAX(A.send_time) as time " \
+            "FROM users U, user_questions Q, answers A " \
+            "WHERE A.question_id = Q.id AND Q.user_id = U.id " \
+                "GROUP BY Q.id, U.username ORDER BY time DESC LIMIT 5"
     
     result = db.session.execute(sql)
+
     return result.fetchall()
 
 
 def question_query(query):
     
-    sql ="SELECT id, question_title, question_content FROM user_questions WHERE "\
-         "question_title LIKE :like OR question_content LIKE :like"
+    sql ="SELECT id, question_title, question_content FROM user_questions " \
+         "WHERE question_title ILIKE :like OR question_content ILIKE :like"
     result = db.session.execute(sql, {"like":query})
 
     return result.fetchall()
@@ -21,7 +24,7 @@ def question_query(query):
 def answer_query(query):
     
     sql ="SELECT id, answer_content FROM answers WHERE "\
-         "answer_content LIKE :like"
+         "answer_content ILIKE :like"
     result = db.session.execute(sql, {"like":query})
 
     return result.fetchall()
@@ -72,7 +75,11 @@ def save_answer(answer, question_id):
         return False
     sql = "INSERT INTO answers (answer_content, answer_points, question_id, user_id, send_time)"\
         " VALUES (:answer_content, :answer_points, :question_id, :user_id, NOW())"
-    db.session.execute(sql, {"answer_content":answer,"answer_points":points,"question_id":question_id, "user_id":user_id })
+
+    db.session.execute(sql, {"answer_content":answer,
+                            "answer_points":points,
+                            "question_id":question_id,
+                            "user_id":user_id })
     db.session.commit()
 
     return True
@@ -110,7 +117,8 @@ def fetch_question(question_id):
 
 def fetch_all_answers(question_id, sort_option):
     
-    sql = "SELECT U.username, A.question_id, A.answer_content, A.send_time, A.id, A.answer_points, A.edited_time FROM answers A, users U "\
+    sql = "SELECT U.username, A.question_id, A.answer_content, A.send_time, A.id, A.answer_points, A.edited_time " \
+        "FROM answers A, users U "\
         "WHERE A.question_id = :id AND U.id = A.user_id"
         
     if sort_option=="1": sql += " ORDER BY A.send_time DESC"
