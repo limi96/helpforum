@@ -1,0 +1,46 @@
+
+{%extends "layout.html"%}
+
+{% block title %} 
+- Solved Warning
+{% endblock %}
+
+{% block content %}
+
+    When you mark a question as solved, you will be asked to first mark the answer that best
+    helped you with your question.
+
+    <br>
+    <br>
+    After this, your question thread will effectively be close.
+
+    <br>
+    <br>
+    The following changes will be applied:
+    <br>
+    <br>
+
+    <li> The title of your question will be marked with the tag "[SOLVED]". </li>
+    
+    <li> You will no longer be able to edit the title of your question or its description! </li>
+
+    <li> Users will no longer be able to post new answers or edit their previous answers!</li>
+    
+    <br>
+
+    The answer that you chose to be the best answer will be marked with a green tag
+    and will always be displayed first.
+        
+    <br>
+    <br>
+    Are you sure you want to continue?    
+
+    <br>
+    <br>
+
+    <a class="mark-solved" href="/solved_confirmation/{{question_id}}/2/none">
+        Yes, I understand perfectly!
+    </a>
+
+{% endblock %}
+

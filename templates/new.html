@@ -6,16 +6,16 @@
         <div class="post-head">
             {{question.question_title }}
         </div>
-
         <div class="post-body">
             <div class="post-author">
                 
-                <b style="font-size: 30px;"> {{question.username}} </b>
+                <b style="font-size: 20px"> {{question.username}} </b>
+                
                 <p style="font-size: 12px;">
                 {{question.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}}    
                 </p>
 
-                {%if session.username == question.username or session.username in admins%}
+                {%if solved_answer == [] and (session.username == question.username or session.username in admins)%}
                 
                     <form action="{{url_for('edit_question',question_id = question_id)}}" method ="post"> 
                         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -41,7 +41,13 @@
         </div>
     </div>
 
-    {%if session.username %}
+    {%if not session.username %}
+        
+        <p style="margin-top: 50px;text-align: center;">
+            Login to answer!
+        </p>
+    
+    {%elif solved_answer == [] and session.username %}
         <br>
         <b> Post a new answer! </b>
         <form action="{{url_for('post_answer', question_id = question_id, sort_option=sort_option)}}" method="post">
@@ -62,7 +68,9 @@
         </script>
 
     {%else%}
-        Login to answer!
+        <p style="margin-top: 50px;text-align: center;">
+            You can no longer post new answers, because the original poster found their best answer!
+        </p>
     {%endif%}
 
     {% if not answers %}
@@ -70,9 +78,50 @@
         There are no answers yet :(
         <br>
         Be the first one :)!
-
-
     {%else%}
+
+    {%if solved_answer == [] and (session.username == question.username or session.username in admins) %}
+        <div class="post-body">
+            <a class="mark-solved" href="/solved_warning/{{question_id}}">
+                Mark question solved!
+            </a>
+        </div>
+    {%endif%}
+    
+    {%if solved_answer != []%}
+
+        <h2>This question was solved by this answer!</h2>
+        <div class="post-container">
+            <div class="post-body">
+                <div class="post-content"  style="min-width: 620px; text-align: center;">
+                    Answer points: {{solved_answer.answer_points}} 
+                </div>
+            </div>
+
+            <div class="post-body">
+                <div class="post-author">
+
+                    <b style="font-size: 20px;"> {{solved_answer.username}} </b>
+
+                    <p style="font-size: 12px;">
+                    {{solved_answer.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}}</p>
+                </div>
+            
+                <div class="post-content">
+                    {{solved_answer.answer_content}}    
+
+                    {%if solved_answer.edited_time%}
+                        <p class="edit-text">Edited at: {{solved_answer.edited_time.strftime("%Y-%m-%d %H:%M:%S")}}</p>
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <h1>All answers</h1>
+
+    {%endif%}
+
 
     <div class="post-body">
         <div class="message">
@@ -87,7 +136,6 @@
             </form>   
         </div>
     </div>
-    
     
     {%for answer in answers: %}
 
@@ -126,7 +174,7 @@
                 <p style="font-size: 12px;">
                 {{answer.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}}</p>
 
-                {%if session.username == answer.username or session.username in admins %}
+                {%if solved_answer == [] and (session.username == answer.username or session.username in admins) %}
 
                 <form action="{{url_for('edit_answer',answer_id=answer.id)}}" method ="post"> 
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

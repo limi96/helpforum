@@ -7,6 +7,40 @@ from flask import redirect, render_template, request, session, url_for, abort
 #routes_questions.py
 #routes_answers.py
 
+@app.route("/solved_warning/<question_id>")
+def solved_warning(question_id):
+
+    return render_template("solved_warning.html", question_id=question_id)
+
+
+@app.route("/solved_confirmation/<question_id>/<sort_option>/<answer_id>", methods =["GET","POST"])
+def solved_confirmation(question_id,sort_option,answer_id):
+
+    if request.method == "GET" and answer_id == "none":
+
+        answers = q.fetch_all_answers(question_id, sort_option)
+
+        return render_template(
+            "solved_confirmation.html", 
+            answers=answers,
+            question_id=question_id,
+            sort_option=sort_option)
+
+    if request.method =="POST":        
+
+        q.solve_question(question_id, answer_id)
+
+        return render_template(
+            "success.html",
+             message="Congratulations on choosing the best answer to your question :)!")
+
+@app.route("/solved_questions")
+def solved_questions():
+    question_list = q.fetch_solved_questions()
+    return render_template("questions.html", question_list = question_list)
+
+
+
 @app.route("/all_questions")
 def all_questions():
     question_list = q.fetch_all_questions()
@@ -70,14 +104,18 @@ def question_url(question_id,sort_option):
     answers = q.fetch_all_answers(question_id, sort_option)
     admins = [admin for admin, in  users.fetch_all_admins()]
 
+    solved_answer = q.fetch_solved_answer(question_id)
+
+    solved_answer = solved_answer[0] if solved_answer != [] else solved_answer
+
     return render_template(
         "new.html",
         admins = admins,
         question_id = question_id,
         question = question,
         answers = answers, 
-        sort_option=sort_option)
-
+        sort_option=sort_option,
+        solved_answer=solved_answer)
 
 
 @app.route("/<question_id>/<answer_id>/<answer_points>/<sort_option>", methods =["POST"])
