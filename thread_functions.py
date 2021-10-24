@@ -3,7 +3,7 @@ import users
 
 def solve_question(question_id, answer_id):
 
-    sql =   "INSERT INTO solved (question_id, answer_id, solved_time) VALUES (:question_id, :answer_id, NOW())"
+    sql =   "INSERT INTO solved (question_id, answer_id) VALUES (:question_id, :answer_id)"
     db.session.execute(sql, {"question_id":question_id, "answer_id":answer_id})
     db.session.commit()
 
