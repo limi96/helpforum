@@ -7,8 +7,9 @@
 
 {% block content %}
 
-<h1> Choose the best answer! </h1>
-
+<div class ="center-body">
+    <h1> Choose the best answer! </h1>
+</div>
 
 {%for answer in answers: %}
 
@@ -23,6 +24,7 @@
             <div class="points-container">
                 <div class="points-element">
                     <form action="{{url_for('solved_confirmation', question_id = question_id, sort_option=sort_option, answer_id=answer.id)}}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                         <input type="submit" value="CHOOSE THIS ONE!">
                     </form>
                 </div>

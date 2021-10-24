@@ -14,7 +14,7 @@
         {% if user_list%}    
 
             {%for user in user_list: %}
-                <p class ="question-link"> {{user.username}}</p> 
+            <a class="question-link" href="{{url_for('user_profile',username=user.username)}}"> {{user.username}} </a> 
             {%endfor %}
             
         {%else%}
@@ -27,9 +27,26 @@
 
         {%if question_list%}
             
+        <div class="index-head">
+        
+            <div class="index-question-title">  Title           </div>
+            <div class="index-author">          Created         </div> 
+            <div class="index-latest">          Latest reply    </div>
+            
+        </div>
+        
             {%for question in question_list: %}
-                <a class="question-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
-            {%endfor %}
+    
+            <div class="index-body">
+                
+                <a class ="index-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
+                <div class="index-user">{{question.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}} </div> 
+                <div class="index-time">
+                    <p style="font-size: 12px;">{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>    
+                </div>
+            </div>
+            
+            {%endfor %}   
             
         {%else%}
             <h2>No results here :(</h2>
@@ -37,25 +54,26 @@
     {%endif%}    
 
     {%if "answers" in options%}
-        <h1>Answers</h1>        
-        
+    <h1>Answers</h1>        
+    
         {%if answer_list%}
-        
-        {%for question in question_list: %}
             {%for answer in answer_list: %}
-            <p class ="question-link"> {{answer.answer_content}}
-                <br>
-                Link to question: 
-                <br>
-                <a href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
-            </p> 
+                <p class ="question-link"> {{answer.answer_content}}
+                    <br>
+                    <br>
+                    Link to question: 
+                    <br>
+                    <a href="{{url_for('question_url',question_id = answer.question_id, sort_option = 2)}}"> {{answer.question_title}} </a>
+                    <br>
+                    Answer points: {{answer.answer_points}}
+                    <br>
+                    Sent at: {{answer.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}}
+                </p> 
             {%endfor %}
-        {%endfor %}
             
         {%else%}
             <h2>No results here :(</h2>
         {%endif%}
-
     {%endif%}
 </div>
 

@@ -1,0 +1,86 @@
+
+{%extends "layout.html"%}
+
+{% block title %} 
+- Main Page
+{% endblock %}
+
+{% block content %}
+<div class="center-body">
+    <h1>{{user_info.username}}'s user profile</h1>    
+</div>
+
+<div class="center-body" style="margin-top:-30px;">
+    <h4>  Joined: {{user_info.creation_time.strftime("%H:%M:%S [%d/%m/%y] ")}} </h4>
+</div>
+
+<div class="center-body">
+    <h1>All content</h1>        
+</div>
+
+<div class="center-body">
+    <a class ="nav-link" href="/user_questions/{{user_info.username}}/2">    User Questions   </a>
+    <a class ="nav-link" href="/user_answers/{{user_info.username}}/2"   >    User Answers     </a>    
+</div>
+    
+<br>
+
+<div class="center-body">
+    <h1>Recent questions</h1>
+</div>
+{%if recent_questions:%}
+
+<div class="index-head">
+        
+    <div class="index-question-title">  Title           </div>
+    <div class="index-author">          Created         </div> 
+    <div class="index-latest">          Latest reply    </div>
+    
+</div>
+
+<div class="index-container">
+    {%for question in recent_questions: %}
+        <div class="index-body">
+            
+            <a class ="index-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
+            <div class="index-user">{{question.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}} </div> 
+            <div class="index-time">
+                <p style="font-size: 12px;">{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>    
+            </div>
+        </div>
+    {%endfor %}
+</div>
+{%else%}
+    <div class="center-body">
+        User has not posted any questions yet :(!
+    </div>
+{%endif%}
+
+<br>
+<br>
+
+<div class="center-body">
+    <h1>Recent answers</h1>
+</div>
+
+{%if recent_answers:%}
+
+{%for answer in recent_answers: %}
+<p class ="question-link"> {{answer.answer_content}}
+    <br>
+    Link to question: 
+    <br>
+    <a href="{{url_for('question_url',question_id = answer.question_id, sort_option = 2)}}"> {{answer.question_title}} </a>
+</p> 
+{%endfor %}  
+
+{%else%}
+    <div class="center-body">
+        User has not posted any answers yet :(!
+    </div>
+{%endif%}
+
+
+{% endblock %}
+
+

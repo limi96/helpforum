@@ -1,5 +1,9 @@
 {%extends "layout.html"%}
 
+{% block title %} 
+- {{question.question_title }}
+{% endblock %}
+
 {% block content %}
 
     <div class="post-container">
@@ -89,11 +93,13 @@
     {%endif%}
     
     {%if solved_answer != []%}
-
-        <h2>This question was solved by this answer!</h2>
-        <div class="post-container">
+        
+        <div class="solved-answer">
+            <h2 style="text-align:center;">
+                Best answer chosen by the original poster :)!
+            </h2>
             <div class="post-body">
-                <div class="post-content"  style="min-width: 620px; text-align: center;">
+                <div class="post-content"  style="min-width: 615px; text-align: center;">
                     Answer points: {{solved_answer.answer_points}} 
                 </div>
             </div>

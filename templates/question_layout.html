@@ -1,0 +1,35 @@
+{%extends "layout.html"%}
+
+
+{% block content %}
+
+    {%block questions_functions%}
+    {%endblock%}
+
+    {% if not question_list %}
+        <div class="center-body">
+            There are no questions :( !
+        </div>
+    {%else%}        
+
+    <div class="index-head">
+        
+        <div class="index-question-title">  Title           </div>
+        <div class="index-author">          Created         </div> 
+        <div class="index-latest">          Latest reply    </div>
+        
+    </div>
+        {%for question in question_list: %}
+        <div class="index-body">
+            
+            <a class ="index-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
+            <div class="index-user">{{question.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}} </div> 
+            <div class="index-time">
+                <p style="font-size: 12px;">{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>    
+            </div>
+        </div>
+        {%endfor %}        
+    {%endif%}
+
+
+{% endblock %}

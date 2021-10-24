@@ -2,6 +2,116 @@ from db import db
 import users
 
 
+
+def order_by(sort_option):
+
+    order_by = ""
+
+    if sort_option=="1": order_by += " ORDER BY Q.send_time DESC"
+    if sort_option=="2": order_by += " ORDER BY Q.send_time ASC"
+    if sort_option=="3": order_by += " ORDER BY time DESC"
+    if sort_option=="4": order_by += " ORDER BY time ASC"
+
+    return order_by
+
+
+def fetch_my_questions(username,sort_option):
+
+    sql =   "SELECT Q.question_title, Q.id, Q.send_time, MAX(A.send_time) as time " \
+            "FROM users U, user_questions Q, answers A " \
+            "WHERE U.username ILIKE :username "\
+            "AND A.question_id = Q.id AND Q.user_id = U.id " \
+            "GROUP BY Q.id, U.username "
+    
+    sql += order_by(sort_option)
+
+    result = db.session.execute(sql, {"username":username})
+    return result.fetchall()
+
+
+def fetch_all_questions(sort_option):
+
+    sql =   "SELECT Q.question_title, Q.id, Q.send_time, MAX(A.send_time) as time " \
+            "FROM users U, user_questions Q, answers A " \
+            "WHERE A.question_id = Q.id AND Q.user_id = U.id " \
+            "GROUP BY Q.id, U.username "
+
+    sql += order_by(sort_option)
+
+    result = db.session.execute(sql)
+    return result.fetchall()
+
+def fetch_solved_questions(sort_option):
+
+    sql =   "SELECT Q.question_title, Q.id, Q.send_time, MAX(A.send_time) as time " \
+            "FROM users U, user_questions Q, answers A, solved S " \
+            "WHERE A.question_id = Q.id AND Q.user_id = U.id " \
+            "AND Q.user_id = U.id AND S.question_id=Q.id "\
+            "GROUP BY Q.id, U.username "
+
+    sql += order_by(sort_option)
+
+    result = db.session.execute(sql)
+    return result.fetchall()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def fetch_recent_questions(username):
+
+    sql =   "SELECT Q.question_title, Q.id, Q.send_time, MAX(A.send_time) as time " \
+            "FROM users U, user_questions Q, answers A " \
+            "WHERE U.username ILIKE :username "\
+            "AND A.question_id = Q.id AND Q.user_id = U.id " \
+            "GROUP BY Q.id, U.username " \
+            "ORDER BY time DESC LIMIT 5"
+    
+    result = db.session.execute(sql, {"username":username})
+    return result.fetchall()
+
+def fetch_recent_answers(username):
+    sql =   "SELECT A.question_id, A.id, U.username, A.answer_content, Q.question_title, A.send_time "\
+            "FROM answers A, user_questions Q, users U " \
+            "WHERE U.username ILIKE :username " \
+            "AND U.id = A.user_id " \
+            "AND A.question_id = Q.id " \
+            "ORDER BY A.send_time DESC LIMIT 5"
+    
+    result = db.session.execute(sql, {"username":username})
+    return result.fetchall()
+
+def fetch_my_answers(username,sort_option):
+
+    sql =   "SELECT A.question_id, A.id, U.username, A.answer_content, Q.question_title, A.answer_points, A.send_time "\
+            "FROM answers A, user_questions Q, users U " \
+            "WHERE U.username ILIKE :username "\
+            "AND U.id = A.user_id " \
+            "AND A.question_id = Q.id"
+
+    if sort_option=="1": sql += " ORDER BY A.send_time DESC"
+    if sort_option=="2": sql += " ORDER BY A.send_time ASC"
+    if sort_option=="3": sql += " ORDER BY A.answer_points DESC"
+    if sort_option=="4": sql += " ORDER BY A.answer_points ASC"
+
+    result = db.session.execute(sql, {"username":username})
+    return result.fetchall()
+
+
+
+
+
+
 def solve_question(question_id, answer_id):
 
     sql =   "INSERT INTO solved (question_id, answer_id, solved_time) VALUES (:question_id, :answer_id, NOW())"
@@ -18,17 +128,8 @@ def solve_question(question_id, answer_id):
     db.session.execute(sql, {"new_title":new_title,"question_id":question_id})
     db.session.commit()
 
-    #return true/false !!!!!!!!!!!!!!!????????????????????????
 
-def fetch_solved_questions():
 
-    sql =   "SELECT S.answer_id, Q.question_title, Q.id, U.username "\
-            "FROM user_questions Q, users U, solved S "\
-            "WHERE Q.user_id = U.id AND S.question_id=Q.id "\
-            "ORDER BY Q.id"
-
-    result = db.session.execute(sql)
-    return result.fetchall()
 
 def fetch_solved_answer(question_id):
 
@@ -40,16 +141,6 @@ def fetch_solved_answer(question_id):
     return result.fetchall()
 
 
-def fetch_all_questions():
-    sql =   "SELECT Q.question_title, Q.id, U.username FROM user_questions Q, users U "\
-            "WHERE Q.user_id = U.id ORDER BY Q.id"
-    result = db.session.execute(sql)
-    return result.fetchall()
-
-def fetch_my_questions(user_id):
-    sql =   "SELECT question_title, id FROM user_questions WHERE user_id = :id"
-    result = db.session.execute(sql, {"id":user_id})
-    return result.fetchall()
 
 
 def fetch_question(question_id):
@@ -77,7 +168,6 @@ def fetch_all_answers(question_id, sort_option):
 
 def fetch_answer(answer_id):
     sql =   "SELECT answer_content FROM answers WHERE id=:id"
-
     result = db.session.execute(sql, {"id":answer_id})
     return result.fetchone()
 
@@ -94,27 +184,58 @@ def index_query():
     return result.fetchall()
 
 
-def question_query(query):
+def question_query(query, posted_by):
+    if posted_by == "":
+
+        sql =   "SELECT Q.question_title, Q.id, Q.send_time, MAX(A.send_time) as time " \
+                "FROM users U, user_questions Q, answers A " \
+                "WHERE A.question_id = Q.id AND Q.user_id = U.id " \
+                "GROUP BY Q.id, U.username "
+
+        result = db.session.execute(sql, {"like":query})
+        return result.fetchall()
+
+    else:
+
+        sql =   "SELECT Q.question_title, Q.id, Q.send_time, MAX(A.send_time) as time " \
+                "FROM users U, user_questions Q, answers A " \
+                "WHERE U.username ILIKE :posted_by " \
+                "AND (question_title ILIKE :like OR question_content ILIKE :like) "\
+                "AND A.question_id = Q.id AND Q.user_id = U.id " \
+                "GROUP BY Q.id, U.username "
+        
+        result = db.session.execute(sql, {"like":query, "posted_by":posted_by})
+        return result.fetchall()
+        
+
+def answer_query(query, posted_by):
+    if posted_by == "":
+
+        sql =   "SELECT A.question_id, A.id, A.answer_content, Q.question_title, A.answer_points, A.send_time "\
+                "FROM answers A, user_questions Q "\
+                "WHERE answer_content ILIKE :like "\
+                "AND A.question_id = Q.id"
+        
+        result = db.session.execute(sql, {"like":query})
+        return result.fetchall()
+
+    else: 
+
+        sql =   "SELECT A.question_id, A.id, U.username, A.answer_content, Q.question_title, A.answer_points, A.send_time "\
+                "FROM answers A, user_questions Q, users U " \
+                "WHERE U.username ILIKE :posted_by " \
+                "AND answer_content ILIKE :like " \
+                "AND U.id = A.user_id " \
+                "AND A.question_id = Q.id"
     
-    sql =   "SELECT id, question_title, question_content FROM user_questions " \
-            "WHERE question_title ILIKE :like OR question_content ILIKE :like"
-    result = db.session.execute(sql, {"like":query})
-
-    return result.fetchall()
-
-def answer_query(query):
-    
-    sql =   "SELECT id, answer_content FROM answers WHERE answer_content ILIKE :like"
-
-    result = db.session.execute(sql, {"like":query})
-
-    return result.fetchall()
+        result = db.session.execute(sql, {"like":query, "posted_by":posted_by})
+        return result.fetchall()
 
 
 def vote(voteType, answer_id, answer_points):
     user_id = users.user_id()
-    #First check if user is in points
 
+    #First check if user is in points
     sql =   "SELECT user_id FROM points P WHERE P.user_id = :user_id AND P.answer_id =:answer_id"
     result = db.session.execute(sql, {"user_id":user_id, "answer_id":answer_id})
     check = False

@@ -1,0 +1,20 @@
+{%extends "question_layout.html"%}
+
+{% block title %} 
+- Solved questions
+{% endblock %}
+
+{%block questions_functions%}
+<div class="center-body">
+    <h1>{{message}}</h1>   
+</div>
+
+<div class="center-body"> 
+    <form action="{{url_for('solved_questions',username=username,sort_option=sort_option)}}"  method="POST">    
+        <input type="radio" name="sort_option" value="1" {%if sort_option=="1"%} checked {%endif%} onchange =this.form.submit() > Newest question
+        <input type="radio" name="sort_option" value="2" {%if sort_option=="2"%} checked {%endif%} onchange =this.form.submit() > Oldest question
+        <input type="radio" name="sort_option" value="3" {%if sort_option=="3"%} checked {%endif%} onchange =this.form.submit() > Newest reply
+        <input type="radio" name="sort_option" value="4" {%if sort_option=="4"%} checked {%endif%} onchange =this.form.submit() > Oldest reply
+    </form>   
+</div>
+{%endblock%}

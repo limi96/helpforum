@@ -3,99 +3,96 @@ import users
 import questions as q
 from flask import redirect, render_template, request, session, url_for, abort
 
-
 #routes_questions.py
 #routes_answers.py
 
-@app.route("/solved_warning/<question_id>")
-def solved_warning(question_id):
+@app.route("/user_profile/<username>")
+def user_profile(username):
 
-    return render_template("solved_warning.html", question_id=question_id)
+    user_info = users.fetch_users(False, username)[0]
+    recent_questions = q.fetch_recent_questions(username)
+    recent_answers = q.fetch_recent_answers(username)
+
+    return render_template(
+        "user_profile.html",
+        user_info=user_info,
+        recent_questions=recent_questions,
+        recent_answers=recent_answers)
 
 
-@app.route("/solved_confirmation/<question_id>/<sort_option>/<answer_id>", methods =["GET","POST"])
-def solved_confirmation(question_id,sort_option,answer_id):
+@app.route("/user_answers/<username>/<sort_option>", methods=["GET","POST"])
+def user_answers(username,sort_option):
 
-    if request.method == "GET" and answer_id == "none":
-
-        answers = q.fetch_all_answers(question_id, sort_option)
+    if request.method == "GET":
+        answer_list = q.fetch_my_answers(username, sort_option)
 
         return render_template(
-            "solved_confirmation.html", 
-            answers=answers,
-            question_id=question_id,
+            "user_answers.html", 
+            username=username, 
+            answer_list=answer_list, 
             sort_option=sort_option)
 
-    if request.method =="POST":        
-
-        q.solve_question(question_id, answer_id)
-
-        return render_template(
-            "success.html",
-             message="Congratulations on choosing the best answer to your question :)!")
-
-@app.route("/solved_questions")
-def solved_questions():
-    question_list = q.fetch_solved_questions()
-    return render_template("questions.html", question_list = question_list)
-
-
-
-@app.route("/all_questions")
-def all_questions():
-    question_list = q.fetch_all_questions()
-    return render_template("questions.html", question_list = question_list)
-
-@app.route("/my_questions")
-def my_questions():
-    id = users.user_id()
-    question_list = q.fetch_my_questions(id)
-    return render_template("questions.html", question_list = question_list)
-
-@app.route("/all_users")
-def all_users():
-    user_list = users.fetch_users(True,"")
-    return render_template("all_users.html", user_list = user_list)
-
-
-@app.route("/search", methods = ["GET","POST"])
-def search():
+    if request.method == "POST":
+        sort_option = request.form["sort_option"]
     
-    if request.method=="GET":
-        return render_template("search.html")
+        return redirect(url_for(
+            "user_answers", username =username, sort_option=sort_option))
 
-    if request.method=="POST":
+@app.route("/user_questions/<username>/<sort_option>", methods=["GET","POST"])
+def user_questions(username,sort_option):
 
-        if session["csrf_token"] != request.form["csrf_token"]:
-            abort(403)
+    if request.method == "GET":
 
-        options = request.form.getlist("search_option")
+        question_list = q.fetch_my_questions(username,sort_option)
+        message = username + "'s questions"
+        return render_template(
+            "user_questions.html",
+            sort_option=sort_option, 
+            username=username, 
+            question_list = question_list, 
+            message=message)
 
-        if not options:
-            return render_template("errors.html", message="You must select at least 1 search option")
-        else:
-            query = request.form["search"]
-            query = "%"+query+"%"
-
-            user_list = users.fetch_users(False,query)  if "users"                  in options else None
-            answer_list   = q.answer_query(query)       if "answers"                in options else None
-            question_list = q.question_query(query)     if "questions" or "answers" in options else None
-
-            return render_template(
-                "result.html", 
-                options=options, 
-                query=query, 
-                question_list=question_list,
-                user_list=user_list,
-                answer_list=answer_list)
+    if request.method == "POST":
+        sort_option = request.form["sort_option"]
+        return redirect(url_for(
+            "user_questions", username =username, sort_option=sort_option))
 
 
+@app.route("/solved_questions/<sort_option>", methods=["GET","POST"])
+def solved_questions(sort_option):
+    if request.method == "GET":
+        question_list = q.fetch_solved_questions(sort_option)
+        return render_template(
+            "solved_questions.html", 
+            sort_option=sort_option,
+            question_list = question_list, 
+            message="Solved questions")
+
+    if request.method == "POST":
+        sort_option = request.form["sort_option"]
+        return redirect(url_for(
+            "solved_questions", sort_option=sort_option))
+
+
+@app.route("/all_questions/<sort_option>", methods=["GET","POST"])
+def all_questions(sort_option):
+    if request.method == "GET":
+        question_list = q.fetch_all_questions(sort_option)
+        return render_template(
+            "all_questions.html", 
+            sort_option=sort_option,
+            question_list = question_list, 
+            message="All questions")
+
+    if request.method == "POST":
+        sort_option = request.form["sort_option"]
+        return redirect(url_for(
+            "all_questions", sort_option=sort_option))
 
 @app.route("/sort_by/<question_id>", methods = ["POST"])
 def sort_by(question_id):
     sort_option = request.form["sort_option"]
     return redirect(url_for("question_url", question_id = question_id, sort_option=sort_option))
-
 
 @app.route("/<question_id>/<sort_option>")
 def question_url(question_id,sort_option):
@@ -117,6 +114,96 @@ def question_url(question_id,sort_option):
         sort_option=sort_option,
         solved_answer=solved_answer)
 
+
+
+
+
+
+
+
+
+@app.route("/browse/")
+def browse():
+    return render_template("browse.html")
+
+
+@app.route("/search", methods = ["GET","POST"])
+def search():
+    
+    if request.method=="GET":
+        return render_template("search.html")
+
+    if request.method=="POST":
+
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
+
+        options = request.form.getlist("search_option")
+
+        if not options:
+            return render_template("errors.html", message="You must select at least 1 search option")
+        else:
+            query = request.form["search"]
+
+            if not query:
+                return render_template("errors.html", message="You must have at least 1 search word!")
+
+            query = "%"+query+"%"
+
+            posted_by   = request.form["posted_by"]
+            posted_by = request.form["posted_by"]
+
+            user_list     = users.fetch_users(False,query)      if "users"      in options else None
+            answer_list   = q.answer_query(query,posted_by)     if "answers"    in options else None
+            question_list = q.question_query(query,posted_by)   if "questions"  in options else None
+
+            return render_template(
+                "result.html",
+                options=options, 
+                query=query, 
+                question_list=question_list,
+                user_list=user_list,
+                answer_list=answer_list)
+
+@app.route("/solved_warning/<question_id>")
+def solved_warning(question_id):
+
+    return render_template("solved_warning.html", question_id=question_id)
+
+
+@app.route("/solved_confirmation/<question_id>/<sort_option>/<answer_id>", methods =["GET","POST"])
+def solved_confirmation(question_id,sort_option,answer_id):
+
+    if request.method == "GET" and answer_id == "none":
+
+        answers = q.fetch_all_answers(question_id, sort_option)
+        admins = [admin for admin, in  users.fetch_all_admins()]
+
+        return render_template(
+            "solved_confirmation.html",
+            admins=admins, 
+            answers=answers,
+            question_id=question_id,
+            sort_option=sort_option)
+
+    if request.method =="POST":        
+
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
+
+        q.solve_question(question_id, answer_id)
+
+        return render_template(
+            "success.html",
+             message="Congratulations on choosing the best answer to your question :)!")
+
+
+
+
+@app.route("/all_users")
+def all_users():
+    user_list = users.fetch_users(True,"")
+    return render_template("all_users.html", user_list = user_list)
 
 @app.route("/<question_id>/<answer_id>/<answer_points>/<sort_option>", methods =["POST"])
 def give_vote(question_id, answer_id, answer_points,sort_option):
@@ -168,7 +255,6 @@ def edit_answer(answer_id):
     
     answer = q.fetch_answer(answer_id)
     answer_content = answer.answer_content
-
 
     return render_template("edit_answer.html", id = answer_id, answer_content=answer_content)
     
@@ -239,9 +325,6 @@ def post_answer(question_id, sort_option):
         return redirect(url_for("question_url", question_id = question_id, sort_option=sort_option))
     else:
         return render_template("errors.html", message="Failed to post question")
-
-
-
 
 @app.route("/post_question", methods=["GET","POST"])
 def post_question():

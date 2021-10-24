@@ -4,14 +4,16 @@ from werkzeug.security import check_password_hash, generate_password_hash, secre
 
 def fetch_users(all, like):
     if all:
-        sql = "SELECT username FROM users"
+        sql = "SELECT username, creation_time FROM users"
         result = db.session.execute(sql)
     else:
-        sql ="SELECT username FROM users WHERE username ILIKE :like"
+        sql ="SELECT username, creation_time FROM users WHERE username ILIKE :like"
         result = db.session.execute(sql, {"like":like})
 
     user_list = result.fetchall()
     return user_list
+
+
 
 def fetch_all_admins():
     sql = "SELECT username FROM users WHERE users.is_admin=TRUE"

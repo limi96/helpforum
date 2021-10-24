@@ -14,7 +14,7 @@
     Enter search words!
     <br>
     <br>
-    <textarea name="search" id ="search" rows="1" cols="88" placeholder =  "Search"></textarea>
+    <textarea name="search" id ="search" rows="2" cols="88" placeholder =  "Search"></textarea>
     <br>
 
     <p><span id="searchWordCount"> 0/50 words</span></p> 
@@ -36,7 +36,15 @@
 
     <br>
     <br>
+
+    Specify a username into thesearch query. If left empty, will search from all users.
+    Only works for question and answer queries.
+    <textarea name="posted_by" id ="posted_by" rows="2" cols="88" placeholder = "Enter a username"></textarea>
+
     <br>
+    <br>
+    <br>
+
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="submit" value="Search!">
     

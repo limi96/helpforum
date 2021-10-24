@@ -1,0 +1,45 @@
+{%extends "layout.html"%}
+
+
+{% block title %} 
+- {{username}}'s answers
+{% endblock %}
+
+{% block content %}
+
+
+<div class="center-body">
+    <h1>{{username}}'s answers</h1>   
+</div>
+
+<div class="center-body"> 
+    <form action="{{url_for('user_answers',username=username,sort_option=sort_option)}}"  method="POST">    
+        <input type="radio" name="sort_option" value="1" {%if sort_option=="1"%} checked {%endif%} onchange =this.form.submit() > Newest           
+        <input type="radio" name="sort_option" value="2" {%if sort_option=="2"%} checked {%endif%} onchange =this.form.submit() > Oldest         
+        <input type="radio" name="sort_option" value="3" {%if sort_option=="3"%} checked {%endif%} onchange =this.form.submit() > Most points
+        <input type="radio" name="sort_option" value="4" {%if sort_option=="4"%} checked {%endif%} onchange =this.form.submit() > Least points   
+    </form>   
+</div>
+    
+        {%if answer_list%}
+            {%for answer in answer_list: %}
+                <p class ="question-link"> {{answer.answer_content}}
+                    <br>
+                    <br>
+                    Link to question: 
+                    <br>
+                    <a href="{{url_for('question_url',question_id = answer.question_id, sort_option = 2)}}"> {{answer.question_title}} </a>
+                    <br>
+                    Answer points: {{answer.answer_points}}
+                    <br>
+                    Sent at: {{answer.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}}
+                </p> 
+            {%endfor %}
+            
+        {%else%}
+            <h2>No results here :(</h2>
+        {%endif%}
+    
+</div>
+
+{% endblock %}

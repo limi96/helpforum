@@ -13,13 +13,13 @@ There are no questions :( !
 
 {%else%}
 
-    <h2 style="text-align: center;"> Top 5 questions with the most recent answers! </h2>
+    <h2 style="text-align: center;"> Top 5 questions with the most recent replies! </h2>
 
     <div class="index-head">
         
-        <div class="index-question-title">   Title     </div>
-        <div class="index-author">Posted by </div> 
-        <div class="index-latest">   Latest reply     </div>
+    <div class="index-question-title">  Title           </div>
+    <div class="index-author">          Posted by       </div> 
+    <div class="index-latest">          Latest reply    </div>
         
     </div>
     
@@ -30,11 +30,10 @@ There are no questions :( !
                 <a class ="index-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
                 <div class="index-user">{{question.username}} </div> 
                 <div class="index-time">
-                    <p>{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>    
+                    <p style="font-size: 12px;">{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>  
                 </div>
             </div>
         {%endfor %}
-        
     </div>
 
 

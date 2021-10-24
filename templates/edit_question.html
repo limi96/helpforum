@@ -1,5 +1,10 @@
 {%extends "layout.html"%}
 
+
+{% block title %} 
+- Edit question
+{% endblock %}
+
 {% block content %}
 
 <form action="{{url_for('commit_edit', id=id,type='question')}}" method="post">
