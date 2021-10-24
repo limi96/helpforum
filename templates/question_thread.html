@@ -57,8 +57,9 @@
         <form action="{{url_for('post_answer', question_id = question_id, sort_option=sort_option)}}" method="post">
             <textarea name="answer" id="answer" rows="2" cols="85" placeholder = "Write your answer here"></textarea>
             <br>
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            
             <input type="submit" value="Post answer">
+            <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
         </form>
 
         <p><span id="answerWordCount"> 0/100 words</span></p> 
@@ -138,7 +139,8 @@
             <h4>Answers: {{answers|length}} </h4>
         </div>
         <div class="sort-options-container">
-            <form action="{{url_for('question_thread', question_id = question_id, sort_option=sort_option)}}"  method="POST">    
+            <form action="{{url_for('sort_by', question_id = question_id, sort_option=sort_option)}}"  method="POST"> 
+            
                 <input type="radio" name="sort_option" value="1" {%if sort_option=="1"%} checked {%endif%} onchange =this.form.submit() > Newest           
                 <input type="radio" name="sort_option" value="2" {%if sort_option=="2"%} checked {%endif%} onchange =this.form.submit() > Oldest         
                 <input type="radio" name="sort_option" value="3" {%if sort_option=="3"%} checked {%endif%} onchange =this.form.submit() > Most points
