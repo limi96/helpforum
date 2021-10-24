@@ -103,11 +103,6 @@ def all_questions(sort_option):
         return redirect(url_for(
             "all_questions", sort_option=sort_option))
 
-@app.route("/sort_by/<question_id>", methods = ["POST"])
-def sort_by(question_id):
-    sort_option = request.form["sort_option"]
-    return redirect(url_for("question_thread", question_id = question_id, sort_option=sort_option))
-
 
 @app.route("/<question_id>/<sort_option>", methods=["GET","POST"])
 def question_thread(question_id,sort_option):
