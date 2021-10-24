@@ -29,7 +29,7 @@
         {%for question in display_list: %}
             <div class="index-body">
                 
-                <a class ="index-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
+                <a class ="index-link" href="{{url_for('question_thread',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
                 <div class="index-user">{{question.username}} </div> 
                 <div class="index-time">
                     <p style="font-size: 12px;">{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>  

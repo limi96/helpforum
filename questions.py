@@ -1,16 +1,14 @@
 from db import db
 import users
 
-
-
 def order_by(sort_option):
 
     order_by = ""
 
     if sort_option=="1": order_by += " ORDER BY Q.send_time DESC"
     if sort_option=="2": order_by += " ORDER BY Q.send_time ASC"
-    if sort_option=="3": order_by += " ORDER BY time DESC"
-    if sort_option=="4": order_by += " ORDER BY time ASC"
+    if sort_option=="3": order_by += " ORDER BY time DESC NULLS LAST"
+    if sort_option=="4": order_by += " ORDER BY time ASC NULLS LAST"
 
     return order_by
 
@@ -74,8 +72,6 @@ def fetch_solved_questions(sort_option):
     return result.fetchall()
 
 
-
-
 def fetch_recent_answers(username):
     sql =   "SELECT A.question_id, A.id, U.username, A.answer_content, Q.question_title, A.send_time "\
             "FROM answers A, user_questions Q, users U " \
@@ -102,10 +98,6 @@ def fetch_my_answers(username,sort_option):
 
     result = db.session.execute(sql, {"username":username})
     return result.fetchall()
-
-
-
-
 
 
 def solve_question(question_id, answer_id):

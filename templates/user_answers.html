@@ -28,7 +28,7 @@
                     <br>
                     Link to question: 
                     <br>
-                    <a href="{{url_for('question_url',question_id = answer.question_id, sort_option = 2)}}"> {{answer.question_title}} </a>
+                    <a href="{{url_for('question_thread',question_id = answer.question_id, sort_option = 2)}}"> {{answer.question_title}} </a>
                     <br>
                     Answer points: {{answer.answer_points}}
                     <br>

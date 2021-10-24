@@ -9,7 +9,7 @@ from flask import redirect, render_template, request, session, url_for, abort
 @app.route("/user_profile/<username>")
 def user_profile(username):
 
-    user_info = users.fetch_users(False, username,"")[0]
+    user_info = users.user_query(username)[0]
     recent_questions = q.fetch_recent_questions(username)
     recent_answers = q.fetch_recent_answers(username)
 
@@ -23,7 +23,8 @@ def user_profile(username):
 def all_users(sort_option):
     if request.method == "GET":
 
-        user_list = users.fetch_users(True,"",sort_option)
+        user_list = users.fetch_all_users(sort_option)
+
         return render_template("all_users.html",sort_option=sort_option, user_list = user_list)
 
     if request.method == "POST":
@@ -105,10 +106,10 @@ def all_questions(sort_option):
 @app.route("/sort_by/<question_id>", methods = ["POST"])
 def sort_by(question_id):
     sort_option = request.form["sort_option"]
-    return redirect(url_for("question_url", question_id = question_id, sort_option=sort_option))
+    return redirect(url_for("question_thread", question_id = question_id, sort_option=sort_option))
 
 @app.route("/<question_id>/<sort_option>")
-def question_url(question_id,sort_option):
+def question_thread(question_id,sort_option):
 
     question = q.fetch_question(question_id)
     answers = q.fetch_all_answers(question_id, sort_option)
@@ -158,7 +159,7 @@ def search():
             posted_by   = request.form["posted_by"]
             posted_by = request.form["posted_by"]
 
-            user_list     = users.fetch_users(False,query,"")   if "users"      in options else None
+            user_list     = users.user_query(query)             if "users"      in options else None
             answer_list   = q.answer_query(query,posted_by)     if "answers"    in options else None
             question_list = q.question_query(query,posted_by)   if "questions"  in options else None
 
@@ -203,18 +204,11 @@ def solved_confirmation(question_id,sort_option,answer_id):
              message="Congratulations on choosing the best answer to your question :)!")
 
 
-
-
-
-
-
-
-
 @app.route("/<question_id>/<answer_id>/<answer_points>/<sort_option>", methods =["POST"])
 def give_vote(question_id, answer_id, answer_points,sort_option):
     vote_type = request.form.get("vote")
     q.vote(vote_type, answer_id, answer_points)
-    return redirect(url_for("question_url", question_id = question_id,sort_option=sort_option))
+    return redirect(url_for("question_thread", question_id = question_id,sort_option=sort_option))
 
 @app.route("/<question_id>/<sort_option>/<answer_id>", methods = ["POST"])
 def delete_answer(question_id, sort_option, answer_id):
@@ -223,7 +217,7 @@ def delete_answer(question_id, sort_option, answer_id):
         abort(403)
 
     q.delete("answers", answer_id)
-    return redirect(url_for("question_url", question_id = question_id, sort_option=sort_option))
+    return redirect(url_for("question_thread", question_id = question_id, sort_option=sort_option))
 
 @app.route("/<question_id>", methods = ["POST"])
 def delete_question(question_id):
@@ -327,7 +321,7 @@ def post_answer(question_id, sort_option):
             message="The answer must be within 2-100 words and no longer than 2000 characters")
 
     if q.post_answer(answer,question_id):
-        return redirect(url_for("question_url", question_id = question_id, sort_option=sort_option))
+        return redirect(url_for("question_thread", question_id = question_id, sort_option=sort_option))
     else:
         return render_template("errors.html", message="Failed to post question")
 
