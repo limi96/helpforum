@@ -1,0 +1,216 @@
+{%extends "layout.html"%}
+
+{% block title %} 
+- {{question.question_title }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="post-container">
+        <div class="post-head">
+            {{question.question_title }}
+        </div>
+        <div class="post-body">
+            <div class="post-author">
+                
+                <b style="font-size: 20px"> {{question.username}} </b>
+                
+                <p style="font-size: 12px;">
+                {{question.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}}    
+                </p>
+
+                {%if solved_answer == [] and (session.username == question.username or session.username in admins)%}
+                
+                    <form action="{{url_for('edit_question',question_id = question_id)}}" method ="post"> 
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                        <input type="submit" name="edit_question" value="Edit"> 
+                        
+                    </form>
+
+                    <form action="{{url_for('delete_question', question_id = question_id, sort_option=sort_option)}}" method ="post"> 
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                        <input type="submit" name="Delete" value="Delete"> 
+                    </form>
+                {%else%}
+                {%endif%}
+            </div>
+            <div class="post-content">
+                {{question.question_content}}
+                
+                {%if question.edited_time%}
+                <p class="edit-text">Edited at: {{question.edited_time.strftime("%Y-%m-%d %H:%M:%S")}}</p>
+                {%endif%}
+
+            </div>
+        </div>
+    </div>
+
+    {%if not session.username %}
+        
+        <p style="margin-top: 50px;text-align: center;">
+            Login to answer!
+        </p>
+    
+    {%elif solved_answer == [] and session.username %}
+        <br>
+        <b> Post a new answer! </b>
+        <form action="{{url_for('post_answer', question_id = question_id, sort_option=sort_option)}}" method="post">
+            <textarea name="answer" id="answer" rows="2" cols="85" placeholder = "Write your answer here"></textarea>
+            <br>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            <input type="submit" value="Post answer">
+        </form>
+
+        <p><span id="answerWordCount"> 0/100 words</span></p> 
+
+        <script
+            src ="/static/wordCount.js"
+            questionArea = "answer"
+            questionDisplay ="answerWordCount"
+            questionMin = "2"
+            questionMax = "100">
+        </script>
+
+    {%else%}
+        <p style="margin-top: 50px;text-align: center;">
+            You can no longer post new answers, because the original poster found their best answer!
+        </p>
+    {%endif%}
+
+    {% if not answers %}
+        <br> 
+
+        <div class="center-body">
+            There are no answers yet :(
+          </div>
+        <br>
+        Be the first one :)!
+        
+    {%else%}
+
+    {%if solved_answer == [] and (session.username == question.username or session.username in admins) %}
+        <div class="post-body">
+            <a class="mark-solved" href="/solved_warning/{{question_id}}">
+                Mark question solved!
+            </a>
+        </div>
+    {%endif%}
+    
+    {%if solved_answer != []%}
+        
+        <div class="solved-answer">
+            <h2 style="text-align:center;">
+                Best answer chosen by the original poster :)!
+            </h2>
+            <div class="post-body">
+                <div class="post-content"  style="min-width: 615px; text-align: center;">
+                    Answer points: {{solved_answer.answer_points}} 
+                </div>
+            </div>
+
+            <div class="post-body">
+                <div class="post-author">
+
+                    <b style="font-size: 20px;"> {{solved_answer.username}} </b>
+
+                    <p style="font-size: 12px;">
+                    {{solved_answer.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}}</p>
+                </div>
+            
+                <div class="post-content">
+                    {{solved_answer.answer_content}}    
+
+                    {%if solved_answer.edited_time%}
+                        <p class="edit-text">Edited at: {{solved_answer.edited_time.strftime("%Y-%m-%d %H:%M:%S")}}</p>
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <h1>All answers</h1>
+
+    {%endif%}
+
+
+    <div class="post-body">
+        <div class="message">
+            <h4>Answers: {{answers|length}} </h4>
+        </div>
+        <div class="sort-options-container">
+            <form action="{{url_for('question_thread', question_id = question_id, sort_option=sort_option)}}"  method="POST">    
+                <input type="radio" name="sort_option" value="1" {%if sort_option=="1"%} checked {%endif%} onchange =this.form.submit() > Newest           
+                <input type="radio" name="sort_option" value="2" {%if sort_option=="2"%} checked {%endif%} onchange =this.form.submit() > Oldest         
+                <input type="radio" name="sort_option" value="3" {%if sort_option=="3"%} checked {%endif%} onchange =this.form.submit() > Most points
+                <input type="radio" name="sort_option" value="4" {%if sort_option=="4"%} checked {%endif%} onchange =this.form.submit() > Least points   
+            </form>   
+        </div>
+    </div>
+    
+    {%for answer in answers: %}
+
+    <div class="post-container">
+        <div class="post-body"> <!--ACTUALLY THIS IS THE HEADER!-->
+            <div class="post-author">
+                <b>Answer #{{loop.index}}</b>
+            </div>
+
+            <div class="post-content">
+                <div class="points-container">
+                    <div class="points-element">
+                        <form action="{{url_for('give_vote', question_id = question_id, answer_id=answer.id, answer_points=answer.answer_points,sort_option=sort_option)}}" method="post">
+                            <input type="submit" name="vote" value="Upvote!">
+                        </form>
+                    </div>                    
+                
+                    <div class="points-element">
+                        <form action="{{url_for('give_vote', question_id = question_id, answer_id=answer.id, answer_points=answer.answer_points,sort_option=sort_option)}}" method="post">
+                            <input type="submit" name ="vote" value="Downvote!">
+                        </form>
+                    </div>
+                    <div class="points-element">
+                        Answer points: {{answer.answer_points}} 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="post-body">
+            <div class="post-author">
+
+                <b style="font-size: 20px;"> {{answer.username}} </b>
+                
+                <p style="font-size: 12px;">
+                {{answer.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}}</p>
+
+                {%if solved_answer == [] and (session.username == answer.username or session.username in admins) %}
+
+                <form action="{{url_for('edit_answer',answer_id=answer.id)}}" method ="post"> 
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                    <input type="submit" name="edit_answer" value="Edit">   
+                </form>
+                
+                <form action="{{url_for('delete_answer', question_id = question_id, sort_option=sort_option, answer_id=answer.id)}}" method ="post"> 
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                    <input type="submit" name="Delete" value="Delete"> 
+                </form>
+                {%else%}
+                {%endif%}
+            </div>
+    
+            <div class="post-content">
+                {{answer.answer_content}}    
+
+                {%if answer.edited_time%}
+                    <p class="edit-text">Edited at: {{answer.edited_time.strftime("%Y-%m-%d %H:%M:%S")}}</p>
+                {%endif%}
+            </div>
+        </div>
+    </div>
+    
+    {%endfor %}
+    {%endif%}
+
+
+{% endblock %}

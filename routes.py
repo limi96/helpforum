@@ -108,25 +108,32 @@ def sort_by(question_id):
     sort_option = request.form["sort_option"]
     return redirect(url_for("question_thread", question_id = question_id, sort_option=sort_option))
 
-@app.route("/<question_id>/<sort_option>")
+
+@app.route("/<question_id>/<sort_option>", methods=["GET","POST"])
 def question_thread(question_id,sort_option):
 
-    question = q.fetch_question(question_id)
-    answers = q.fetch_all_answers(question_id, sort_option)
-    admins = [admin for admin, in  users.fetch_all_admins()]
+    if request.method == "GET":
 
-    solved_answer = q.fetch_solved_answer(question_id)
+        question = q.fetch_question(question_id)
+        answers = q.fetch_all_answers(question_id, sort_option)
+        admins = [admin for admin, in  users.fetch_all_admins()]
 
-    solved_answer = solved_answer[0] if solved_answer != [] else solved_answer
+        solved_answer = q.fetch_solved_answer(question_id)
 
-    return render_template(
-        "new.html",
-        admins = admins,
-        question_id = question_id,
-        question = question,
-        answers = answers, 
-        sort_option=sort_option,
-        solved_answer=solved_answer)
+        solved_answer = solved_answer[0] if solved_answer != [] else solved_answer
+
+        return render_template(
+            "question_thread.html",
+            admins = admins,
+            question_id = question_id,
+            question = question,
+            answers = answers, 
+            sort_option=sort_option,
+            solved_answer=solved_answer)
+
+    if request.method == "POST":
+        sort_option = request.form["sort_option"]
+        return redirect(url_for("question_thread", question_id = question_id, sort_option=sort_option))
 
 @app.route("/browse/")
 def browse():
