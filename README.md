@@ -10,6 +10,13 @@ Samalla jokainen käyttäjä voi äänestää, mistä kommenteista oli eniten ap
 
 Kaikilla käyttäjillä on “omat kysymykset” -näkymä, josta he voivat seurata, minkälaisia vastauksia heidän kysymyksensä ovat saaneet. 
 
+## Puutteet:
+
+* Hakutuloksien näkymässä ei ole mahdollista muuttaa tuloksien järjestyksiä.
+* Routes-tiedostojen järjestäminen omaan kansioon ei onnistunut, koska Heroku aina herjasi tämän, eikä löytänyt enää tiedostoja.
+* Paikallisesti testattuna näitä ongelmia ei ollut.
+* Sama koskee myös fetch.py, queries.py, users.py ja thread_functions.py. Ideaalitapauksessa nämä olisivat voineet olla omassa "functions"-kansiossa.
+
 ## Toteutetut toiminnallisuudet: 
 
 ### Yleiset käyttäjätoiminnot:
