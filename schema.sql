@@ -35,7 +35,6 @@ CREATE TABLE solved (
 	id SERIAL PRIMARY KEY,
 	question_id INTEGER REFERENCES user_questions ON DELETE CASCADE,
 	answer_id INTEGER REFERENCES answers ON DELETE CASCADE
-	solved_time TIMESTAMP;
 );
 
 
