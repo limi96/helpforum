@@ -19,8 +19,8 @@
 </div>
 
 <div class="center-body">
-    <a class ="nav-link" href="/user_questions/{{user_info.username}}/2">    User Questions   </a>
-    <a class ="nav-link" href="/user_answers/{{user_info.username}}/2"   >    User Answers     </a>    
+    <a class ="nav-link" href="/user_questions/{{user_info.username}}/1">    User Questions   </a>
+    <a class ="nav-link" href="/user_answers/{{user_info.username}}/2"   >   User Answers     </a>    
 </div>
     
 <br>
@@ -45,7 +45,11 @@
             <a class ="index-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
             <div class="index-user">{{question.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}} </div> 
             <div class="index-time">
-                <p style="font-size: 12px;">{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>    
+                {%if question.time%}
+                    <p style="font-size: 12px;">{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>
+                {%else%}
+                    <p style="font-size: 12px;">No replies :( </p>
+                {%endif%} 
             </div>
         </div>
     {%endfor %}
@@ -66,7 +70,7 @@
 {%if recent_answers:%}
 
 {%for answer in recent_answers: %}
-<p class ="question-link"> {{answer.answer_content}}
+<p class ="result-link"> {{answer.answer_content}}
     <br>
     Link to question: 
     <br>

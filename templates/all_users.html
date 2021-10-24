@@ -7,16 +7,35 @@
 {% block content %}
 
 {% if not user_list %}
-  There are no users :( !
-
+<div class="center-body">
+  There are no users :( !  
+</div>
 {%else%}
 
   <div class="center-body">
     <h1>All users</h1>
   </div>
 
+  <div class="center-body"> 
+    <form action="{{url_for('all_users', sort_option=sort_option)}}"  method="POST">    
+        <input type="radio" name="sort_option" value="1" {%if sort_option=="1"%} checked {%endif%} onchange =this.form.submit() > Newest user          
+        <input type="radio" name="sort_option" value="2" {%if sort_option=="2"%} checked {%endif%} onchange =this.form.submit() > Oldest user       
+    </form>   
+  </div>
+
   {%for user in user_list: %}
-    <a class="question-link" href="{{url_for('user_profile',username=user.username)}}"> {{user.username}} </a>
+
+    <p class="result-link">
+
+      <a href="{{url_for('user_profile',username=user.username)}}"> {{user.username}} </a>
+      <br>
+      <br>
+      Joined:
+      <br>
+      {{user.creation_time.strftime("%H:%M:%S [%d/%m/%y] ")}}
+    </p>
+
+    
   {%endfor %}
 
 {%endif%}

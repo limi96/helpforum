@@ -2,9 +2,13 @@ from db import db
 from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash, secrets
 
-def fetch_users(all, like):
+def fetch_users(all, like, sort_option):
     if all:
         sql = "SELECT username, creation_time FROM users"
+
+        if sort_option=="1": sql += " ORDER BY users.creation_time DESC"
+        if sort_option=="2": sql += " ORDER BY users.creation_time ASC"
+
         result = db.session.execute(sql)
     else:
         sql ="SELECT username, creation_time FROM users WHERE username ILIKE :like"
@@ -12,8 +16,6 @@ def fetch_users(all, like):
 
     user_list = result.fetchall()
     return user_list
-
-
 
 def fetch_all_admins():
     sql = "SELECT username FROM users WHERE users.is_admin=TRUE"
@@ -47,7 +49,7 @@ def register(username, password):
     hash_value = generate_password_hash(password)
 
     try: 
-        sql = "INSERT INTO users (username, password) VALUES (:username, :password)"
+        sql = "INSERT INTO users (username, password,creation_time) VALUES (:username, :password,NOW())"
         db.session.execute(sql, {"username":username, "password":hash_value})
         db.session.commit()
     except:

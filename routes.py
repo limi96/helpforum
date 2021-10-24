@@ -9,7 +9,7 @@ from flask import redirect, render_template, request, session, url_for, abort
 @app.route("/user_profile/<username>")
 def user_profile(username):
 
-    user_info = users.fetch_users(False, username)[0]
+    user_info = users.fetch_users(False, username,"")[0]
     recent_questions = q.fetch_recent_questions(username)
     recent_answers = q.fetch_recent_answers(username)
 
@@ -19,6 +19,19 @@ def user_profile(username):
         recent_questions=recent_questions,
         recent_answers=recent_answers)
 
+@app.route("/all_users/<sort_option>", methods=["GET","POST"])
+def all_users(sort_option):
+    if request.method == "GET":
+
+        user_list = users.fetch_users(True,"",sort_option)
+        return render_template("all_users.html",sort_option=sort_option, user_list = user_list)
+
+    if request.method == "POST":
+        sort_option = request.form["sort_option"]
+    
+        return redirect(url_for(
+            "all_users", sort_option=sort_option))
+    
 
 @app.route("/user_answers/<username>/<sort_option>", methods=["GET","POST"])
 def user_answers(username,sort_option):
@@ -114,14 +127,6 @@ def question_url(question_id,sort_option):
         sort_option=sort_option,
         solved_answer=solved_answer)
 
-
-
-
-
-
-
-
-
 @app.route("/browse/")
 def browse():
     return render_template("browse.html")
@@ -153,7 +158,7 @@ def search():
             posted_by   = request.form["posted_by"]
             posted_by = request.form["posted_by"]
 
-            user_list     = users.fetch_users(False,query)      if "users"      in options else None
+            user_list     = users.fetch_users(False,query,"")   if "users"      in options else None
             answer_list   = q.answer_query(query,posted_by)     if "answers"    in options else None
             question_list = q.question_query(query,posted_by)   if "questions"  in options else None
 
@@ -200,10 +205,10 @@ def solved_confirmation(question_id,sort_option,answer_id):
 
 
 
-@app.route("/all_users")
-def all_users():
-    user_list = users.fetch_users(True,"")
-    return render_template("all_users.html", user_list = user_list)
+
+
+
+
 
 @app.route("/<question_id>/<answer_id>/<answer_points>/<sort_option>", methods =["POST"])
 def give_vote(question_id, answer_id, answer_points,sort_option):
@@ -321,10 +326,12 @@ def post_answer(question_id, sort_option):
             "errors.html", 
             message="The answer must be within 2-100 words and no longer than 2000 characters")
 
-    if q.save_answer(answer,question_id):
+    if q.post_answer(answer,question_id):
         return redirect(url_for("question_url", question_id = question_id, sort_option=sort_option))
     else:
         return render_template("errors.html", message="Failed to post question")
+
+
 
 @app.route("/post_question", methods=["GET","POST"])
 def post_question():

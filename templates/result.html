@@ -14,7 +14,14 @@
         {% if user_list%}    
 
             {%for user in user_list: %}
-            <a class="question-link" href="{{url_for('user_profile',username=user.username)}}"> {{user.username}} </a> 
+            <p class="result-link">
+                <a href="{{url_for('user_profile',username=user.username)}}"> {{user.username}} </a>
+                <br>
+                <br>
+                Joined:
+                <br>
+                {{user.creation_time.strftime("%H:%M:%S [%d/%m/%y] ")}}
+            </p>
             {%endfor %}
             
         {%else%}
@@ -42,7 +49,11 @@
                 <a class ="index-link" href="{{url_for('question_url',question_id = question.id, sort_option = 2)}}"> {{question.question_title}} </a>
                 <div class="index-user">{{question.send_time.strftime("%H:%M:%S [%d/%m/%y] ")}} </div> 
                 <div class="index-time">
-                    <p style="font-size: 12px;">{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>    
+                    {%if question.time%}
+                        <p style="font-size: 12px;">{{question.time.strftime("%H:%M:%S [%d/%m/%y] ")}} </p>
+                    {%else%}
+                        <p style="font-size: 12px;">No replies :( </p>
+                    {%endif%}    
                 </div>
             </div>
             
@@ -58,7 +69,7 @@
     
         {%if answer_list%}
             {%for answer in answer_list: %}
-                <p class ="question-link"> {{answer.answer_content}}
+                <p class ="result-link"> {{answer.answer_content}}
                     <br>
                     <br>
                     Link to question: 

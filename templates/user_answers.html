@@ -23,7 +23,7 @@
     
         {%if answer_list%}
             {%for answer in answer_list: %}
-                <p class ="question-link"> {{answer.answer_content}}
+                <p class ="result-link"> {{answer.answer_content}}
                     <br>
                     <br>
                     Link to question: 
@@ -37,7 +37,10 @@
             {%endfor %}
             
         {%else%}
-            <h2>No results here :(</h2>
+            
+            <div class="center-body">
+                <h2>No results here :(</h2>
+            </div>
         {%endif%}
     
 </div>

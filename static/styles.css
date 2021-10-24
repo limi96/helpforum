@@ -95,12 +95,12 @@ a.mark-solved:hover {
 
 .index-body {
     display: flex;
-    background: white;
+    background-color:rgb(212, 199, 255);
     border-radius: .5em;
 }
 
-.index-body:nth-child(even)  {
-    background-color:rgb(212, 199, 255);
+.index-body:nth-child(odd)  {
+    background: white;
 }
 
 .index-time {
@@ -277,13 +277,13 @@ a.nav-link:hover {
     color: #6435ff;
 }
 
-a.question-link:hover {
+a.result-link:hover {
     background-color:#ffffff;
     color:#6435ff;
     border: solid #6435ff 2px;
 }
 
-.question-link {
+.result-link {
     border: solid #6435ff 1px;
     text-align: center;
     font-size: 15px;
@@ -293,6 +293,6 @@ a.question-link:hover {
     display:block;
     word-wrap: break-word;
 }
-.question-link:nth-child(even) {
+.result-link:nth-child(even) {
     background-color:rgb(212, 199, 255);
 }

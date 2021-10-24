@@ -10,14 +10,14 @@
 <div class="center-body">
     {%if session.username %}
         <a class ="nav-link" href="/user_profile/{{session.username}}">     My Profile     </a>
-        <a class ="nav-link" href="/user_questions/{{session.username}}/2"> My Questions   </a>
+        <a class ="nav-link" href="/user_questions/{{session.username}}/1"> My Questions   </a>
         <a class ="nav-link" href="/user_answers/{{session.username}}/2">   My Answers     </a>
     {%endif%}
 </div>
 
 <div class="center-body">
-    <a class ="nav-link" href="/all_questions/2">   All Questions </a>
-    <a class ="nav-link" href="/all_users">         All Users     </a>
+    <a class ="nav-link" href="/all_questions/1">   All Questions </a>
+    <a class ="nav-link" href="/all_users/1">         All Users     </a>
 </div>
 
 

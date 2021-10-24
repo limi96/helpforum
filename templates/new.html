@@ -79,9 +79,13 @@
 
     {% if not answers %}
         <br> 
-        There are no answers yet :(
+
+        <div class="center-body">
+            There are no answers yet :(
+          </div>
         <br>
         Be the first one :)!
+        
     {%else%}
 
     {%if solved_answer == [] and (session.username == question.username or session.username in admins) %}
