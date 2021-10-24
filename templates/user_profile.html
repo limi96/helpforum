@@ -72,6 +72,7 @@
 {%for answer in recent_answers: %}
 <p class ="result-link"> {{answer.answer_content}}
     <br>
+    <br>
     Link to question: 
     <br>
     <a href="{{url_for('question_thread',question_id = answer.question_id, sort_option = 2)}}"> {{answer.question_title}} </a>
