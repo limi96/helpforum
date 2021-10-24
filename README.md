@@ -2,7 +2,16 @@
 
 Sovellusta pääsee testaamaan Herokussa osoitteessa http://tsoha-helpforum.herokuapp.com/
 
-Tietokanta on toteutettu PostgreSQL-tietokannalla. 
+Sovellusta voit testata joko luomalla oman käyttäjän tunnuksen tai admin-tunnuksella, jolla on kaikki oikeudet.
+| |Admin-tili|Perustili|
+| --- | --- | --- |
+|Käyttäjätunnus |admin|kalle|
+|Salasana:      |admin|kalle|
+
+Tarkemmat käyttöohjeet: https://github.com/limi96/helpforum/blob/main/Dokumentaatio/kayttoohje.md 
+Sovelluksen asentaminen: https://github.com/limi96/helpforum/blob/main/Dokumentaatio/Asennusohje.md 
+
+Sovellus on toteutettu Pythonilla (FLASK), HTML:llä ja CSS:llä. Tietokanta on toteutettu PostgreSQL-tietokannalla. 
 
 Sovelluksen ideana on, että käyttäjät voivat luoda oman keskustelualueen, jossa ensimmäinen postaus on käyttäjän luoma kysymys ja muut käyttäjät voivat vastata kysymykseen kommentoimalla alkuperäistä postausta.
 
@@ -36,13 +45,15 @@ Kaikilla käyttäjillä on “omat kysymykset” -näkymä, josta he voivat seur
 * Käyttäjä voi luoda kysymysketjun asettamalla otsikon ja antamalla lisätietoja kysymyksestä
 * Käyttäjät voivat myös kirjoittaa vastauksia kyseiselle kysymyksille.
 * Käyttäjät voivat editoida tai poistaa vain omia kysymyksiä ja vastauksia. Poikkeuksena ovat adminit.
+* Jokaisella muokatulla kysymyksellä/vastauksella näkyy oikeassa alakulmassa "Edited" ja ajankohta. 
 * Käyttäjät voivat myös antaa pisteitä vastauksille. Jokainen käyttäjä saa vain **yhden äänen**
 * Alkuperäinen kirjoittaja voi valita parhaimman vastauksen kysymysketjussa. Tällöin ketju suljetaan (ei enää uusia vastuaksia) ja paras vastaus tuodaan näkyvästi esille. Kysymys luokitellaan nyt ratkaistuksi ja otsikoon laitetaan ”[SOLVED]"-merkintä
 * Listatuille vastauksille on monia vaihtoehtoja niiden järjestysnäkymille.
 
+
 ### Hakutoiminto:
 * Sivustosta voi etsiä käyttäjänimiä, kysymyksiä ja vastauksia  Search-sivulta käyttämällä avainsanaa.
-* Kysymysten hausa tulokset etsitään kysymyksen otsikosta tai sen lisätiedoista.
+* Kysymysten haussa tulokset etsitään kysymyksen otsikosta tai sen lisätiedoista.
 * Kysymyksiä ja vastauksia etsiessä haun voi myös rajata siten, että etsitään tietyn käyttäjänimen postauksia.
 * Haku on CASE INSENSITIVE.
 
